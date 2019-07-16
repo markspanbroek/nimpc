@@ -15,18 +15,18 @@ suite "communication":
     waitFor party1.send(party2, 42)
 
   test "can receive values for other party":
+    let future = party2.receive(party1)
     waitFor party1.send(party2, 42)
-    check (waitFor party2.receive(party1)) == 42
+    check (waitFor future) == 42
 
   test "value is received by recipient only":
+    let future = party1.receive(party2)
     waitFor party1.send(party2, 42)
-    check waitFor(party1.receive(party2)) != 42
+    expect Exception:
+      discard waitFor future
 
   test "value is received from specified sender only":
+    let future = party1.receive(party2)
     waitFor party1.send(party1, 42)
-    check (waitFor party1.receive(party2)) != 42
-
-  test "value is received only once":
-    waitFor party1.send(party2, 42)
-    discard waitFor party2.receive(party1)
-    check (waitFor party2.receive(party1)) != 42
+    expect Exception:
+      discard waitFor future
