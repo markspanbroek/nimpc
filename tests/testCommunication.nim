@@ -21,4 +21,6 @@ suite "communication":
     party1.send(party2, 42)
     check party1.receive(party2) != 42
 
-# value is only recieved from specified sender
+  test "value is received from specified sender only":
+    party1.send(party1, 42)
+    check party1.receive(party2) != 42
