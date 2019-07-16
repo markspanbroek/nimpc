@@ -6,11 +6,14 @@ import NiMPC
 suite "communication":
   var party1: Party
   var party2: Party
+  var party3: Party
 
   setup:
     party1 = Party()
     party2 = Party()
-
+    party3 = Party()
+    connect(party1, party2, party3)
+    
   test "can send from one party to another":
     waitFor party1.send(party2, 42)
 
@@ -30,3 +33,10 @@ suite "communication":
     waitFor party1.send(party1, 42)
     expect Exception:
       discard waitFor future
+
+  test "it can broadcast to other parties":
+    let future1 = party1.receive(party3)
+    let future2 = party2.receive(party3)
+    waitFor party3.broadcast(42)
+    check (waitFor future1) == 42
+    check (waitFor future2) == 42

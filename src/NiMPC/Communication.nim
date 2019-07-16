@@ -17,6 +17,10 @@ method send*(sender: Party, recipient: Party, value: BigInt): Future[void] {.asy
   let messages = recipient.inbox.mgetOrPut(sender, newFutureStream[BigInt]())
   await messages.write(value)
 
+method broadcast*(sender: Party, value: BigInt): Future[void] {.async,base.} =
+  for recipient in sender.peers:
+    await sender.send(recipient, value)
+
 method receive*(recipient: Party, sender: Party): Future[BigInt] {.async,base.} =
   let messages = recipient.inbox.mgetOrPut(sender, newFutureStream[BigInt]())
   let (_, received) = await messages.read()
