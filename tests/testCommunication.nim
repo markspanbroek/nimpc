@@ -24,3 +24,8 @@ suite "communication":
   test "value is received from specified sender only":
     party1.send(party1, 42)
     check party1.receive(party2) != 42
+
+  test "value is received only once":
+    party1.send(party2, 42)
+    discard party2.receive(party1)
+    check party2.receive(party1) != 42

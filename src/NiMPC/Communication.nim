@@ -19,3 +19,4 @@ method send*(sender: Party, recipient: Party, value: BigInt) {.base.} =
 method receive*(recipient: Party, sender: Party): BigInt {.base.} =
   if recipient.inbox.hasKey(sender):
     result = recipient.inbox[sender]
+    recipient.inbox.del(sender)
