@@ -2,10 +2,7 @@ import unittest
 import bigints
 import NiMPC
 
-test "can create a party":
-  check Party() != nil
-
-suite "multiple parties":
+suite "communication":
   var party1: Party
   var party2: Party
 
@@ -24,3 +21,4 @@ suite "multiple parties":
     party1.send(party2, 42)
     check party1.receive(party2) != 42
 
+# value is only recieved from specified sender

@@ -1,11 +1,6 @@
 import tables
-import hashes
 import bigints
-
-type Party* = ref object
-
-proc hash*(party: Party): Hash =
-  result = hash(unsafeAddr party[])
+include Parties
 
 var latestValues = newTable[Party, BigInt]()
 
