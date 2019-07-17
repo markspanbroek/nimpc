@@ -14,7 +14,7 @@ proc id(party: Party): ByteAddress =
   cast[ByteAddress](unsafeAddr party[])
 
 proc hash*(party: Party): Hash =
-  result = hash(party.id)
+  hash(party.id)
 
 proc `$`*(party: Party): string =
-  result = fmt"party{party.id}"
+  fmt"party{party.id}"
