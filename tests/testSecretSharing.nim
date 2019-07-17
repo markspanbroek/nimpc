@@ -1,25 +1,20 @@
 import unittest
 import asyncdispatch
+import asynctest
 import bigints
 import NiMPC
 
-test "it can generate a random secret":
+test "generates a random secret":
   discard random()
 
-test "it can open a shared random value":
-  let party1 = Party()
-  let party2 = Party()
-  let secret1 = random()
-  let secret2 = random()
-  waitFor party1.reveal(secret1, party2)
-  let revealed = waitFor party2.obtain(secret2)
-  var zero: BigInt
-  check revealed != zero
+asynctest "opens a shared random value":
+  let party1, party2 = Party()
+  connect(party1, party2)
+  let secret1, secret2 = random()
+  await party1.reveal(secret1, party2)
+  discard await party2.obtain(secret2)
 
-test "it generates different random numbers":
+asynctest "generates different random numbers":
   let party = Party()
-  let secret1 = random()
-  let secret2 = random()
-  let revealed1 = waitFor party.obtain(secret1)
-  let revealed2 = waitFor party.obtain(secret2)
-  check revealed1 != revealed2
+  let secret1, secret2 = random()
+  check (await party.obtain(secret1)) != (await party.obtain(secret2))
