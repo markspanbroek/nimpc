@@ -9,7 +9,6 @@ proc connect*(parties: varargs[Party]) =
     for party2 in parties:
       if party1 != party2:
         party1.peers.add(party2)
-        party2.peers.add(party1)
 
 proc id(party: Party): ByteAddress =
   cast[ByteAddress](unsafeAddr party[])
