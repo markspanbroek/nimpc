@@ -1,4 +1,5 @@
 import hashes
+import strformat
 
 type Party* = ref object
   peers*: seq[Party]
@@ -10,5 +11,11 @@ proc connect*(parties: varargs[Party]) =
         party1.peers.add(party2)
         party2.peers.add(party1)
 
+proc id(party: Party): ByteAddress =
+  cast[ByteAddress](unsafeAddr party[])
+
 proc hash*(party: Party): Hash =
-  result = hash(unsafeAddr party[])
+  result = hash(party.id)
+
+proc `$`*(party: Party): string =
+  result = fmt"party{party.id}"
