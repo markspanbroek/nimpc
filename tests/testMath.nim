@@ -14,4 +14,4 @@ asynctest "adds secret numbers":
   let c2 = a2 + b2
   await party2.reveal(c2, party1)
 
-  check (await party1.obtain(c1)) == (await party2.obtain(c2))
+  check (await party1.open(c1)) == (await party2.open(c2))

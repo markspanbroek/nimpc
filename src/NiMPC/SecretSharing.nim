@@ -14,7 +14,7 @@ proc random*: Secret =
 method reveal*(party: Party, secret: Secret, recipient: Party) {.async,base.} =
   await party.send(recipient, secret.share)
 
-method obtain*(party: Party, secret: Secret): Future[BigInt] {.async,base.} =
+method open*(party: Party, secret: Secret): Future[BigInt] {.async,base.} =
   var shares = @[secret.share]
   for sender in party.peers:
     shares.add(await party.receive(sender))
