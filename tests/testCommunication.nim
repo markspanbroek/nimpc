@@ -5,9 +5,7 @@ import asynctest
 import NiMPC
 
 suite "communication":
-  var party1: Party
-  var party2: Party
-  var party3: Party
+  var party1, party2, party3: Party
 
   setup:
     party1 = Party()
