@@ -1,6 +1,5 @@
 import unittest
 import bigints
-import asyncdispatch
 import asynctest
 import NiMPC
 

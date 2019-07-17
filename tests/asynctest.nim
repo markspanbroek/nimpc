@@ -1,4 +1,5 @@
 import asyncdispatch
+export asyncdispatch
 
 template asynctest*(name, body) =
   test name:
