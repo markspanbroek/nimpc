@@ -1,6 +1,7 @@
 import unittest
 import bigints
 import asyncdispatch
+import asynctest
 import NiMPC
 
 suite "communication":
@@ -14,29 +15,24 @@ suite "communication":
     party3 = Party()
     connect(party1, party2, party3)
     
-  test "can send from one party to another":
-    waitFor party1.send(party2, 42)
+  asynctest "can send from one party to another":
+    await party1.send(party2, 42)
 
-  test "can receive values for other party":
-    let future = party2.receive(party1)
-    waitFor party1.send(party2, 42)
-    check (waitFor future) == 42
+  asynctest "can receive values for other party":
+    await party1.send(party2, 42)
+    check (await party2.receive(party1)) == 42
 
-  test "value is received by recipient only":
-    let future = party1.receive(party2)
-    waitFor party1.send(party2, 42)
+  asynctest "value is received by recipient only":
+    await party1.send(party2, 42)
     expect Exception:
-      discard waitFor future
+      discard waitFor party1.receive(party2)
 
-  test "value is received from specified sender only":
-    let future = party1.receive(party2)
-    waitFor party1.send(party1, 42)
+  asynctest "value is received from specified sender only":
+    await party1.send(party1, 42)
     expect Exception:
-      discard waitFor future
+      discard waitFor party1.receive(party2)
 
-  test "it can broadcast to other parties":
-    let future1 = party1.receive(party3)
-    let future2 = party2.receive(party3)
-    waitFor party3.broadcast(42)
-    check (waitFor future1) == 42
-    check (waitFor future2) == 42
+  asynctest "it can broadcast to other parties":
+    await party3.broadcast(42)
+    check (await party1.receive(party3)) == 42
+    check (await party2.receive(party3)) == 42
