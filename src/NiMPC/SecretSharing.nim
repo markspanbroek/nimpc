@@ -15,7 +15,15 @@ method reveal*(secret: Secret, recipient: Party) {.async,base.} =
   await party.send(recipient, secret.share)
 
 proc reveal*(secret: Future[Secret], recipient: Party) {.async.} =
-  result = reveal(await secret, recipient)
+  await reveal(await secret, recipient)
+
+proc reveal*(secret: Secret) {.async.} =
+  let party = secret.party
+  for recipient in party.peers:
+    await secret.reveal(recipient)
+
+proc reveal*(secret: Future[Secret]) {.async.} =
+  await reveal(await secret)
 
 proc open(shares: seq[uint32]): uint32 =
   result = shares.foldl(a + b)
