@@ -16,3 +16,10 @@ asynctest "adds secret numbers":
 
     check (await c1.open()) == 42
     check (await c2.open()) == 42
+
+test "refuses to add numbers from different parties":
+  twoParties:
+    let a = party1.random()
+    let b = party2.random()
+    expect Exception:
+      discard a + b
