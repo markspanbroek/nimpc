@@ -1,6 +1,7 @@
 import tables
 import asyncdispatch
-include Parties
+import Parties
+export Parties
 
 type
   Messages = FutureStream[uint32]
