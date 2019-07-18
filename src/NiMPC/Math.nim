@@ -48,6 +48,7 @@ converter toFuture(secret: Secret): Future[Secret] =
   result.complete(secret)
 
 proc `*`(a: Secret, b: Secret): Future[Secret] {.async.} =
+  assert a.party == b.party
   let triple = a.party.triple()
 
   let closedEpsilon = a - triple.a

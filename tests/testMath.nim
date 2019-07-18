@@ -66,3 +66,10 @@ asynctest "multiplies secret numbers":
     let foo2 = (await product2.open()) 
     check foo1 == 42
     check foo2 == 42
+
+asynctest "refuses to multiply numbers from different parties":
+  twoParties:
+    let a = party1.random()
+    let b = party2.random()
+    expect Exception:
+      discard await a * b
