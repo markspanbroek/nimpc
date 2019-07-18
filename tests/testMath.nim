@@ -14,12 +14,12 @@ asynctest "adds secret numbers":
     check (await sum1.open()) == 42
     check (await sum2.open()) == 42
 
-test "refuses to add numbers from different parties":
+asynctest "refuses to add numbers from different parties":
   twoParties:
     let a = party1.random()
     let b = party2.random()
     expect Exception:
-      discard a + b
+      discard await a + b
 
 asynctest "subtracts secret numbers":
   singleParty:

@@ -7,7 +7,7 @@ type Secret* = object
   party*: Party
   share*: uint32
 
-method random*(party: Party): Secret {.base.} =
+method random*(party: Party): Future[Secret] {.async,base.} =
   result = Secret(party: party, share: getRandom())
 
 method reveal*(secret: Secret, recipient: Party) {.async,base.} =
