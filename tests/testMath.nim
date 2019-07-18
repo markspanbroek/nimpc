@@ -21,6 +21,13 @@ asynctest "refuses to add numbers from different parties":
     expect Exception:
       discard await a + b
 
+asynctest "adds a constant":
+  singleParty:
+    let a = party.share(40)
+    let b: uint32 = 2
+    check (await (a + b).open()) == 42
+    check (await (b + a).open()) == 42
+
 asynctest "subtracts secret numbers":
   singleParty:
     let difference = party.share(44) - party.share(2)
