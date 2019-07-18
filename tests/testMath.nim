@@ -5,11 +5,8 @@ import NiMPC
 
 asynctest "adds secret numbers":
   twoParties:
-    let a = await party1.share(40)
-    let b = await party2.share(2)
-
-    let c1 = a + await party1.obtain(party2)
-    let c2 = b + await party2.obtain(party1)
+    let c1 = party1.share(40) + party1.obtain(party2)
+    let c2 = party2.obtain(party1) + party2.share(2)
 
     await c1.reveal(party2)
     await c2.reveal(party1)

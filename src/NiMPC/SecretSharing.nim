@@ -14,6 +14,9 @@ method reveal*(secret: Secret, recipient: Party) {.async,base.} =
   let party = secret.party
   await party.send(recipient, secret.share)
 
+proc reveal*(secret: Future[Secret], recipient: Party) {.async.} =
+  result = reveal(await secret, recipient)
+
 proc open(shares: seq[uint32]): uint32 =
   result = shares.foldl(a + b)
 
@@ -23,6 +26,9 @@ method open*(secret: Secret): Future[uint32] {.async,base.} =
   for sender in party.peers:
     shares.add(await party.receive(sender))
   result = open(shares)
+
+method open*(secret: Future[Secret]): Future[uint32] {.async,base.} =
+  result = await open(await secret)
 
 method share*(party: Party, input: uint32): Future[Secret] {.async,base.} =
   var shares = @[getRandom()]
