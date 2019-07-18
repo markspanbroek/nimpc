@@ -1,7 +1,6 @@
 import unittest
 import asynctest
 import parties
-import bigints
 import NiMPC
 
 test "generates a random secret":
