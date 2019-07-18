@@ -20,3 +20,8 @@ test "refuses to add numbers from different parties":
     let b = party2.random()
     expect Exception:
       discard a + b
+
+asynctest "subtracts secret numbers":
+  singleParty:
+    let difference = party.share(44) - party.share(2)
+    check (await difference.open()) == 42
