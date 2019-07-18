@@ -32,3 +32,10 @@ asynctest "subtracts secret numbers":
   singleParty:
     let difference = party.share(44) - party.share(2)
     check (await difference.open()) == 42
+
+asynctest "refuses to subtract numbers from different parties":
+  twoParties:
+    let a = party1.random()
+    let b = party2.random()
+    expect Exception:
+      discard await a - b
