@@ -41,3 +41,7 @@ proc `*`*(a: Future[Secret], b: uint32): Future[Secret] {.async.} =
 
 proc `*`*(a: uint32, b: Future[Secret]): Future[Secret] {.async.} =
   result = await (b * a)
+
+converter toFuture(secret: Secret): Future[Secret] =
+  result = newFuture[Secret]()
+  result.complete(secret)
