@@ -21,8 +21,8 @@ asynctest "generates different random numbers":
 asynctest "shares a secret":
   let party1, party2 = Party()
   connect(party1, party2)
-  let secret2 = await party2.obtain(party1)
   let secret1 = await party1.share(42)
+  let secret2 = await party2.obtain(party1)
   await party1.reveal(secret1, party2)
   let opened = await party2.open(secret2)
   check opened == 42

@@ -20,11 +20,13 @@ method open*(party: Party, secret: Secret): Future[BigInt] {.async,base.} =
     shares.add(await party.receive(sender))
   result = shares.foldl(a + b)
 
-method share*(party: Party, private: BigInt): Future[Secret] {.async,base.} =
-  let r = random()
-  let openR = await party.open(r)
-  result = Secret(share: r.share - openR + private)
+method share*(party: Party, input: BigInt): Future[Secret] {.async,base.} =
+  let numberOfParties = party.peers.len + 1
+  let shares = newSeqWith(numberOfParties, random().share)
+  let r = shares.foldl(a + b)
+  for i in 0..<party.peers.len:
+    await party.send(party.peers[i], shares[i])
+  result = Secret(share: shares[^1] - r + input)
 
 method obtain*(party: Party, sender: Party): Future[Secret] {.async,base.} =
-  result = random()
-  await party.reveal(result, sender)
+  result = Secret(share: await party.receive(sender))
