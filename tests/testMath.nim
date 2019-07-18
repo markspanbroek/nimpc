@@ -46,3 +46,10 @@ asynctest "subtracts a constant":
     let b: uint32 = 42
     check (await (a - b).open()) == 0
     check (await (b - a).open()) == 0
+
+asynctest "multipies by a constant":
+  singleParty:
+    let a = party.share(21)
+    let b: uint32 = 2
+    check (await (a * b).open()) == 42
+    check (await (b * a).open()) == 42
