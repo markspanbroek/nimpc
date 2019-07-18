@@ -11,5 +11,5 @@ srcDir        = "src"
 # Dependencies
 
 requires "nim >= 0.20.0"
-requires "bigints > 0.4.2"
+requires "bigints >= 0.4.3"
 requires "sysrandom >= 1.1.0"
