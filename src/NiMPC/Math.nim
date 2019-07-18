@@ -1,4 +1,4 @@
 import SecretSharing
 
 proc `+`*(a: Secret, b: Secret): Secret =
-  Secret(share: a.share + b.share)
+  Secret(party: a.party, share: a.share + b.share)

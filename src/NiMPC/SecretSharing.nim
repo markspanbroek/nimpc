@@ -4,18 +4,21 @@ import sysrandom
 import Communication
 
 type Secret* = object
+  party*: Party
   share*: uint32
 
-proc random*: Secret =
-  result = Secret(share: getRandom())
+method random*(party: Party): Secret {.base.} =
+  result = Secret(party: party, share: getRandom())
 
-method reveal*(party: Party, secret: Secret, recipient: Party) {.async,base.} =
+method reveal*(secret: Secret, recipient: Party) {.async,base.} =
+  let party = secret.party
   await party.send(recipient, secret.share)
 
 proc open(shares: seq[uint32]): uint32 =
   result = shares.foldl(a + b)
 
-method open*(party: Party, secret: Secret): Future[uint32] {.async,base.} =
+method open*(secret: Secret): Future[uint32] {.async,base.} =
+  let party = secret.party
   var shares = @[secret.share]
   for sender in party.peers:
     shares.add(await party.receive(sender))
@@ -26,7 +29,9 @@ method share*(party: Party, input: uint32): Future[Secret] {.async,base.} =
   for receiver in party.peers:
     shares.add getRandom()
     await party.send(receiver, shares[^1])
-  result = Secret(share: shares[0] - open(shares) + input)
+  let share = shares[0] - open(shares) + input
+  result = Secret(party: party, share: share)
 
 method obtain*(party: Party, sender: Party): Future[Secret] {.async,base.} =
-  result = Secret(share: await party.receive(sender))
+  let share = await party.receive(sender)
+  result = Secret(party: party, share: share)

@@ -11,8 +11,8 @@ asynctest "adds secret numbers":
     let c1 = a + await party1.obtain(party2)
     let c2 = b + await party2.obtain(party1)
 
-    await party1.reveal(c1, party2)
-    await party2.reveal(c2, party1)
+    await c1.reveal(party2)
+    await c2.reveal(party1)
 
-    check (await party1.open(c1)) == 42
-    check (await party2.open(c2)) == 42
+    check (await c1.open()) == 42
+    check (await c2.open()) == 42
