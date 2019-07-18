@@ -53,3 +53,16 @@ asynctest "multipies by a constant":
     let b: uint32 = 2
     check (await (a * b).open()) == 42
     check (await (b * a).open()) == 42
+
+asynctest "multiplies secret numbers":
+  twoParties:
+    let product1 = party1.share(21) * party1.obtain(party2)
+    let product2 = party2.obtain(party1) * party2.share(2)
+
+    await product1.reveal(party2)
+    await product2.reveal(party1)
+
+    let foo1 = (await product1.open())
+    let foo2 = (await product2.open()) 
+    check foo1 == 42
+    check foo2 == 42
