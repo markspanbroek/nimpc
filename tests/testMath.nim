@@ -39,3 +39,10 @@ asynctest "refuses to subtract numbers from different parties":
     let b = party2.random()
     expect Exception:
       discard await a - b
+
+asynctest "subtracts a constant":
+  singleParty:
+    let a = party.share(42)
+    let b: uint32 = 42
+    check (await (a - b).open()) == 0
+    check (await (b - a).open()) == 0
