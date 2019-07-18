@@ -10,11 +10,11 @@ type
 
 var inboxes = Inboxes()
 
-proc inbox(party: Party): Inbox =
-  inboxes.mgetOrPut(party, Inbox())
+proc inbox(recipient: Party): Inbox =
+  inboxes.mgetOrPut(recipient, Inbox())
 
-proc messagesFrom(inbox: Inbox, party: Party): Messages =
-  inbox.mgetOrPut(party, newFutureStream[uint32]())
+proc messagesFrom(inbox: Inbox, sender: Party): Messages =
+  inbox.mgetOrPut(sender, newFutureStream[uint32]())
 
 method send*(sender: Party, recipient: Party, value: uint32): Future[void] {.async,base.} =
   let messages = recipient.inbox.messagesFrom(sender)
