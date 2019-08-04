@@ -1,7 +1,8 @@
 import unittest
 import asynctest
 import parties
-import NiMPC
+import NiMPC/Parties
+import NiMPC/SecretSharing
 
 asynctest "generates different random numbers":
   singleParty:

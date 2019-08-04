@@ -1,7 +1,9 @@
 import unittest
 import asynctest
 import parties
-import NiMPC
+import NiMPC/Parties
+import NiMPC/SecretSharing
+import NiMPC/Math
 
 asynctest "adds secret numbers":
   twoParties:

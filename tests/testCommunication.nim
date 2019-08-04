@@ -1,7 +1,7 @@
 import unittest
 import asynctest
 import parties
-import NiMPC
+import NiMPC/Communication
 
 asynctest "can send from one party to another":
   twoParties:

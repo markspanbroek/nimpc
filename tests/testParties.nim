@@ -1,5 +1,5 @@
 import unittest
-import NiMPC
+import NiMPC/Parties
 
 test "can create a party":
   check Party() != nil
