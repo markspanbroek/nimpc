@@ -1,5 +1,7 @@
 import simpleot
 import sequtils
+import asyncdispatch
+import NiMPC/Communication
 export simpleot
 
 type
@@ -31,3 +33,9 @@ proc generateKeys*(senders: Senders,
 proc generateKeys*(receivers: Receivers): seq[Key] =
   for receiver in receivers:
     result &= receiver.generateKeys()
+
+proc receiveSenderMessage*(recipient: Party, sender: Party): Future[SenderMessage] {.async.} =
+  result = await receive[SenderMessage](recipient, sender)
+
+proc receiveReceiverMessage*(recipient: Party, sender: Party): Future[ReceiverMessage] {.async.} =
+  result = await receive[ReceiverMessage](recipient, sender)

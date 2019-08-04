@@ -1,6 +1,9 @@
 import unittest
+import asynctest
+import parties
 import sequtils
 import NiMPC/ObliviousTransfer
+import NiMPC/Communication
 
 suite "oblivious transfer":
 
@@ -66,3 +69,17 @@ suite "oblivious transfer":
     var empty: Key
     check keys.len == 8
     check keys != repeat(empty, 8)
+
+suite "communication of oblivious transfer messages":
+
+  asynctest "can send a sender message":
+    twoParties:
+      let message = Sender().generateSecret()
+      await party1.send(party2, message)
+      check (await party2.receiveSenderMessage(party1)) == message
+  
+  asynctest "can send a receiver message":
+    twoParties:
+      let (_, message) = Receiver().generateSecret(Sender().generateSecret())
+      await party1.send(party2, message)
+      check (await party2.receiveReceiverMessage(party1)) == message
