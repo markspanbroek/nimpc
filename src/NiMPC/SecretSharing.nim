@@ -32,7 +32,7 @@ method open*(secret: Secret): Future[uint32] {.async,base.} =
   let party = secret.party
   var shares = @[secret.share]
   for sender in party.peers:
-    shares.add(await party.receive(sender))
+    shares.add(await party.receiveUint32(sender))
   result = open(shares)
 
 method open*(secret: Future[Secret]): Future[uint32] {.async,base.} =
@@ -47,5 +47,5 @@ method share*(party: Party, input: uint32): Future[Secret] {.async,base.} =
   result = Secret(party: party, share: share)
 
 method obtain*(party: Party, sender: Party): Future[Secret] {.async,base.} =
-  let share = await party.receive(sender)
+  let share = await party.receiveUint32(sender)
   result = Secret(party: party, share: share)
