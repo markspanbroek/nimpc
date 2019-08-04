@@ -12,10 +12,13 @@ proc generateSecrets*(senders: Senders): seq[SenderMessage] =
   result = senders.mapIt(it.generateSecret())
 
 proc generateSecrets*(receivers: Receivers, 
-                      senderMessages: SenderMessages): seq[ReceiverMessage] =
+                      senderMessages: SenderMessages): 
+                      tuple[bits: seq[bool], messages: seq[ReceiverMessage]] =
   assert receivers.len == senderMessages.len
   for i in 0..<receivers.len:
-    result &= receivers[i].generateSecret(senderMessages[i])
+    let (bits, message) = receivers[i].generateSecret(senderMessages[i])
+    result.bits &= bits.mapIt(bool(it))
+    result.messages &= message
 
 proc generateKeys*(senders: Senders, 
                    receiverMessages: ReceiverMessages): (seq[Key], seq[Key]) =
