@@ -3,12 +3,14 @@ import sequtils
 import Random
 import Communication
 
-type Secret* = object
-  party*: Party
-  share*: uint64
+type
+  Share* = uint64
+  Secret* = object
+    party*: Party
+    share*: Share
 
 method random*(party: Party): Future[Secret] {.async,base.} =
-  result = Secret(party: party, share: random[uint64]())
+  result = Secret(party: party, share: random[Share]())
 
 method reveal*(secret: Secret, recipient: Party) {.async,base.} =
   let party = secret.party
@@ -25,7 +27,7 @@ proc reveal*(secret: Secret) {.async.} =
 proc reveal*(secret: Future[Secret]) {.async.} =
   await reveal(await secret)
 
-proc open(shares: seq[uint64]): uint64 =
+proc sum(shares: seq[Share]): uint64 =
   result = shares.foldl(a + b)
 
 method open*(secret: Secret): Future[uint32] {.async,base.} =
@@ -33,17 +35,17 @@ method open*(secret: Secret): Future[uint32] {.async,base.} =
   var shares = @[secret.share]
   for sender in party.peers:
     shares.add(await party.receiveUint64(sender))
-  result = uint32(open(shares))
+  result = uint32(sum(shares))
 
 method open*(secret: Future[Secret]): Future[uint32] {.async,base.} =
   result = await open(await secret)
 
 method share*(party: Party, input: uint32): Future[Secret] {.async,base.} =
-  var shares = @[random[uint64]()]
+  var shares = @[random[Share]()]
   for receiver in party.peers:
-    shares.add random[uint64]()
+    shares.add random[Share]()
     await party.send(receiver, shares[^1])
-  let share = shares[0] - open(shares) + input
+  let share = shares[0] - sum(shares) + input
   result = Secret(party: party, share: share)
 
 method obtain*(party: Party, sender: Party): Future[Secret] {.async,base.} =
