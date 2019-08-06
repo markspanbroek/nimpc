@@ -34,8 +34,10 @@ proc generateKeys*(receivers: Receivers): seq[Key] =
   for receiver in receivers:
     result &= receiver.generateKeys()
 
-proc receiveSenderMessage*(recipient: Party, sender: Party): Future[SenderMessage] {.async.} =
-  result = await receive[SenderMessage](recipient, sender)
+proc receiveSenderMessages*(recipient: Party, sender: Party): 
+                            Future[seq[SenderMessage]] {.async.} =
+  result = await receive[seq[SenderMessage]](recipient, sender)
 
-proc receiveReceiverMessage*(recipient: Party, sender: Party): Future[ReceiverMessage] {.async.} =
-  result = await receive[ReceiverMessage](recipient, sender)
+proc receiveReceiverMessages*(recipient: Party, sender: Party): 
+                              Future[seq[ReceiverMessage]] {.async.} =
+  result = await receive[seq[ReceiverMessage]](recipient, sender)

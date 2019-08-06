@@ -70,16 +70,14 @@ suite "oblivious transfer":
     check keys.len == 8
     check keys != repeat(empty, 8)
 
-suite "communication of oblivious transfer messages":
-
-  asynctest "can send a sender message":
+  asynctest "can send sender messages":
     twoParties:
-      let message = Sender().generateSecret()
-      await party1.send(party2, message)
-      check (await party2.receiveSenderMessage(party1)) == message
+      let messages = senders.generateSecrets()
+      await party1.send(party2, messages)
+      check (await party2.receiveSenderMessages(party1)) == messages
   
-  asynctest "can send a receiver message":
+  asynctest "can send receiver messages":
     twoParties:
-      let (_, message) = Receiver().generateSecret(Sender().generateSecret())
-      await party1.send(party2, message)
-      check (await party2.receiveReceiverMessage(party1)) == message
+      let (_, messages) = receivers.generateSecrets(senders.generateSecrets())
+      await party1.send(party2, messages)
+      check (await party2.receiveReceiverMessages(party1)) == messages
