@@ -30,5 +30,5 @@ proc receive*[T](recipient: Party, sender: Party): Future[T] {.async.} =
   let (_, received) = await messages.read()
   result = to[T](received)
 
-proc receiveUint32*(recipient: Party, sender: Party): Future[uint32] {.async.} =
-  result = await receive[uint32](recipient, sender)
+proc receiveUint64*(recipient: Party, sender: Party): Future[uint64] {.async.} =
+  result = await receive[uint64](recipient, sender)
