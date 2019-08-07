@@ -1,8 +1,8 @@
 import unittest
 import asynctest
 import parties
-import NiMPC/Communication
-import NiMPC/ObliviousTransfer
+import NiMPC/ObliviousTransfer/Sequence
+import NiMPC/ObliviousTransfer/Communication
 
 suite "oblivious transfer communication":
 

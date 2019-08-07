@@ -2,9 +2,9 @@ import unittest
 import asynctest
 import parties
 import sequtils
-import NiMPC/ObliviousTransfer
+import NiMPC/ObliviousTransfer/Sequence
 
-suite "oblivious transfer":
+suite "sequence of oblivious transfers":
 
   var senders: seq[Sender]
   var receivers: seq[Receiver]

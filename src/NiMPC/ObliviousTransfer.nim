@@ -4,8 +4,7 @@ import Parties
 import ObliviousTransfer/Sequence
 import ObliviousTransfer/Communication
 
-export Sequence
-export Communication
+export Key
 
 type
   Keys = seq[Key]
