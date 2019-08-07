@@ -29,13 +29,6 @@ suite "oblivious transfer between two parties":
     test "generates unique sender keys":
       check senderKeys0 != senderKeys1
 
-    test "choice bits indicate which sender key has been chosen":
-      for i in 0..<choiceBits.len:
-        if choiceBits[i]:
-          check receiverKeys[i] == senderKeys1[i]
-        else:
-          check receiverKeys[i] == senderKeys0[i]
-
   suite "any amount":
     
     proc performOT(amount: uint) {.async.} =
@@ -54,3 +47,12 @@ suite "oblivious transfer between two parties":
       twoParties:
         await performOT(7)
         checkKeyLengths 7
+
+    asynctest "choice bits indicate which sender key has been chosen":
+      twoParties:
+        await performOT(8)
+        for i in 0..<choiceBits.len:
+          if choiceBits[i]:
+            check receiverKeys[i] == senderKeys1[i]
+          else:
+            check receiverKeys[i] == senderKeys0[i]

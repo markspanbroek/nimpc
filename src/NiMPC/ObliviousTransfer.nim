@@ -1,5 +1,6 @@
 import asyncdispatch
 import sequtils
+import algorithm
 import Parties
 import ObliviousTransfer/Sequence
 import ObliviousTransfer/Communication
@@ -25,7 +26,7 @@ proc truncate[T,U](pair: (seq[T], seq[U]), amount: uint): (seq[T], seq[U]) =
 
 proc sendOT*(sender, receiver: Party, amount:uint=4): 
              Future[SendResult] {.async.} =
-  let otSenders = repeat(Sender(), numberOfExchanges(amount))
+  let otSenders = newSeqWith(int(numberOfExchanges(amount)), Sender())
   let senderMessages = otSenders.generateSecrets()
   await sender.send(receiver, senderMessages)
   let receiverMessages = await sender.receiveReceiverMessages(receiver)
@@ -34,7 +35,7 @@ proc sendOT*(sender, receiver: Party, amount:uint=4):
 
 proc receiveOT*(receiver, sender: Party, amount:uint=4):
                 Future[ReceiveResult] {.async.} =
-  let otReceivers = repeat(Receiver(), numberOfExchanges(amount))
+  let otReceivers = newSeqWith(int(numberOfExchanges(amount)), Receiver())
   let senderMessages = await receiver.receiveSenderMessages(sender)
   let (bits, receiverMessages) = otReceivers.generateSecrets(senderMessages)
   await receiver.send(sender, receiverMessages)
