@@ -12,5 +12,5 @@ suite "conversions for triple generation":
     check toShare(key) == cast[Share](key)
 
   test "converts sequence of keys to shares":
-    let keys = repeat(random[Key](), 2)
+    let keys = random[array[2, Key]]()
     check toShares(keys) == keys.mapIt(it.toShare())
