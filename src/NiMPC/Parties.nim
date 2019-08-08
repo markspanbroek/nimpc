@@ -1,5 +1,6 @@
 import hashes
 import strformat
+import sequtils
 
 type Party* = ref object
   peers*: seq[Party]
@@ -18,3 +19,6 @@ proc hash*(party: Party): Hash =
 
 proc `$`*(party: Party): string =
   fmt"party{party.id}"
+
+proc isFirst*(party: Party): bool =
+  result = party.peers.allIt(party < it)

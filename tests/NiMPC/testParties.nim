@@ -1,4 +1,6 @@
 import unittest
+import sequtils
+import math
 import NiMPC/Parties
 
 suite "parties":
@@ -12,3 +14,9 @@ suite "parties":
     check party1.peers == @[party2, party3]
     check party2.peers == @[party1, party3]
     check party3.peers == @[party1, party2]
+
+  test "only one party is the first party":
+    let parties = newSeqWith(3, Party())
+    connect(parties)
+    let firsts = parties.mapIt(int(it.isFirst)).sum()
+    check firsts == 1
