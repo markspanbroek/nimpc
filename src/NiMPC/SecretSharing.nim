@@ -1,6 +1,6 @@
 import asyncdispatch
 import sequtils
-import Random
+import LocalRandom
 import Communication
 
 type

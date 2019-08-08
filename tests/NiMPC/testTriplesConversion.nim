@@ -1,6 +1,6 @@
 import unittest
 import sequtils
-import NiMPC/Random
+import NiMPC/LocalRandom
 import NiMPC/SecretSharing
 import NiMPC/ObliviousTransfer
 import NiMPC/Triples/Conversion

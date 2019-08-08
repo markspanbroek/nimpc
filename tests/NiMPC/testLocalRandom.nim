@@ -1,7 +1,7 @@
 import unittest
 import sequtils
 import math
-import NiMPC/Random
+import NiMPC/LocalRandom
 
 suite "random":
   

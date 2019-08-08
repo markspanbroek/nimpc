@@ -1,7 +1,7 @@
 import unittest
 import asynctest
 import parties
-import NiMPC/Random
+import NiMPC/LocalRandom
 import NiMPC/Triples/Communication
 import NiMPC/SecretSharing
 
