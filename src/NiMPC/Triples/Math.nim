@@ -1,4 +1,3 @@
-import ../SecretSharing/Secrets
 import ../SecretSharing/Internals
 import ../Parties
 

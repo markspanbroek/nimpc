@@ -3,7 +3,6 @@ import sequtils
 import LocalRandom
 import Communication
 import SecretSharing/Internals
-import SecretSharing/Secrets
 
 export Secret
 
@@ -29,11 +28,7 @@ proc sum(shares: seq[Share]): uint64 =
   result = shares.foldl(a + b)
 
 method open*(secret: Secret): Future[uint32] {.async,base.} =
-  let party = secret.party
-  var shares = @[secret.share]
-  for sender in party.peers:
-    shares.add(await party.receiveUint64(sender))
-  result = uint32(sum(shares))
+  result = uint32(await secret.openSumOfShares())
 
 method open*(secret: Future[Secret]): Future[uint32] {.async,base.} =
   result = await open(await secret)
