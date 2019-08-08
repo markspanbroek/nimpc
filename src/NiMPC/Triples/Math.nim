@@ -1,3 +1,7 @@
+import ../SecretSharing/Secrets
+import ../SecretSharing/Internals
+import ../Parties
+
 proc `*`*[T](a: bool, b: T): T =
   if a:
     result = b
@@ -16,3 +20,13 @@ proc `+`*[T](a: openArray[T], b: openArray[T]): seq[T] =
 proc `-`*[T](a: openArray[T]): seq[T] =
   for element in a:
     result &= T(0) - element
+
+proc `*`*(a: Share, b: Secret): Secret =
+  result = Secret(party: b.party, share: a * b.share)
+
+proc `+`*(a: Secret, b: Share): Secret =
+  if a.party.isFirst:
+    result = Secret(party: a.party, share: a.share + b)
+  else:
+    result = a
+

@@ -1,5 +1,7 @@
 import unittest
+import NiMPC/Parties
 import NiMPC/Triples/Math
+import NiMPC/SecretSharing/Secrets
 import NiMPC/SecretSharing/Internals
 
 suite "math for triple generation":
@@ -23,3 +25,16 @@ suite "math for triple generation":
   test "negates sequence of shares":
     let a = @[Share(1), Share(2), Share(3)]
     check -a == @[Share(-1), Share(-2), Share(-3)]
+
+  test "computes share * secret without losing precision":
+    let largeUint64 = 0'u64-2'u64
+    let a = Share(largeUint64 div 2)
+    let b = Secret(party: Party(), share: Share(2))
+    check (a * b).share == Share(largeUint64)
+
+  test "computes secret + share without losing precision":
+    let largeUint64 = 0'u64-2'u64
+    let a = Secret(party: Party(), share: Share(largeUint64 div 2))
+    let b = Share(largeUint64 div 2)
+    check (a + b).share == Share(largeUint64)
+
