@@ -15,4 +15,4 @@ implemented before it can be considered feature complete:
 - [ ] MAC checking, to make computations safe against active adversaries.
 - [ ] OT extensions, to make multiplications faster and to circumvent a known
       flaw in the Oblivious Transfer protocol (see section 1.1. of the
-      [OT paper](https://eprint.iacr.org/2015/267.pdf).
+      [OT paper](https://eprint.iacr.org/2015/267.pdf)).
