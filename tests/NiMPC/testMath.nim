@@ -35,9 +35,13 @@ suite "math":
       check (await sum2.open()) == 42
 
   asynctest "subtracts secret numbers":
-    singleParty:
-      let difference = party.share(44) - party.share(2)
-      check (await difference.open()) == 42
+    twoParties:
+      let difference1 = party1.share(44) - party1.obtain(party2)
+      let difference2 = party2.obtain(party1) - party2.share(2)
+      await difference1.reveal()
+      await difference2.reveal()
+      check (await difference1.open()) == 42
+      check (await difference2.open()) == 42
 
   asynctest "refuses to subtract numbers from different parties":
     twoParties:
@@ -56,11 +60,13 @@ suite "math":
       check (await sum2.open()) == 0
 
   asynctest "multipies by a constant":
-    singleParty:
-      let a = party.share(21)
-      let b: uint32 = 2
-      check (await (a * b).open()) == 42
-      check (await (b * a).open()) == 42
+    twoParties:
+      let product1 = party1.share(21) * 2
+      let product2 = 2 * party2.obtain(party1)
+      await product1.reveal()
+      await product2.reveal()
+      check (await product1.open()) == 42
+      check (await product2.open()) == 42
 
   asynctest "multiplies secret numbers":
     twoParties:
