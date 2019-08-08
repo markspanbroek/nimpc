@@ -1,7 +1,7 @@
 import unittest
 import sequtils
 import NiMPC/LocalRandom
-import NiMPC/SecretSharing
+import NiMPC/SecretSharing/Internals
 import NiMPC/ObliviousTransfer
 import NiMPC/Triples/Conversion
 

@@ -1,6 +1,7 @@
 import asyncdispatch
 import Parties
 import SecretSharing
+import SecretSharing/Internals
 
 type Triple = tuple[a, b, c: Secret]
 

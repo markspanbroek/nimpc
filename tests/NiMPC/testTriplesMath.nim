@@ -1,6 +1,6 @@
 import unittest
 import NiMPC/Triples/Math
-import NiMPC/SecretSharing
+import NiMPC/SecretSharing/Internals
 
 suite "math for triple generation":
   

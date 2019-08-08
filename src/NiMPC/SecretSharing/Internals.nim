@@ -1,0 +1,1 @@
+type Share* = uint64

@@ -2,12 +2,10 @@ import asyncdispatch
 import sequtils
 import LocalRandom
 import Communication
+import SecretSharing/Internals
+import SecretSharing/Secrets
 
-type
-  Share* = uint64
-  Secret* = object
-    party*: Party
-    share*: Share
+export Secret
 
 method random*(party: Party): Future[Secret] {.async,base.} =
   result = Secret(party: party, share: random[Share]())

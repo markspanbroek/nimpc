@@ -1,5 +1,6 @@
 import asyncdispatch
 import ../SecretSharing
+import ../SecretSharing/Internals
 import ../Communication
 export Communication
 

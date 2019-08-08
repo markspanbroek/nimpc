@@ -1,5 +1,5 @@
 import sequtils
-import NiMPC/SecretSharing
+import NiMPC/SecretSharing/Internals
 import NiMPC/ObliviousTransfer
 
 proc toShare*(key: Key): Share =
