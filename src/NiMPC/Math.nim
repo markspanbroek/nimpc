@@ -1,4 +1,5 @@
 import asyncdispatch
+import Parties
 import SecretSharing
 import Triples
 
@@ -7,7 +8,10 @@ proc `+`(a: Secret, b: Secret): Secret =
   result = Secret(party: a.party, share: a.share + b.share)
 
 proc `+`(a: Secret, b: uint32): Secret =
-  result = Secret(party: a.party, share: a.share + b)
+  if a.party.isFirst:
+    result = Secret(party: a.party, share: a.share + b)
+  else:
+    result = a
   
 proc `+`*(a: Future[Secret], b: Future[Secret]): Future[Secret] {.async.} =
   result = (await a) + (await b)
@@ -23,7 +27,10 @@ proc `-`(a: Secret, b: Secret): Secret =
   result = Secret(party: a.party, share: a.share - b.share)
 
 proc `-`(a: Secret, b: uint32): Secret =
-  result = Secret(party: a.party, share: a.share - b)
+  if a.party.isFirst:
+    result = Secret(party: a.party, share: a.share - b)
+  else:
+    result = a
   
 proc `-`*(a: Future[Secret], b: Future[Secret]): Future[Secret] {.async.} =
   result = (await a) - (await b)

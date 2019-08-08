@@ -26,11 +26,13 @@ suite "math":
         discard await a + b
 
   asynctest "adds a constant":
-    singleParty:
-      let a = party.share(40)
-      let b: uint32 = 2
-      check (await (a + b).open()) == 42
-      check (await (b + a).open()) == 42
+    twoParties:
+      let sum1 = party1.share(40) + 2
+      let sum2 = 2 + party2.obtain(party1)
+      await sum2.reveal()
+      await sum1.reveal()
+      check (await sum1.open()) == 42
+      check (await sum2.open()) == 42
 
   asynctest "subtracts secret numbers":
     singleParty:
@@ -45,11 +47,13 @@ suite "math":
         discard await a - b
 
   asynctest "subtracts a constant":
-    singleParty:
-      let a = party.share(42)
-      let b: uint32 = 42
-      check (await (a - b).open()) == 0
-      check (await (b - a).open()) == 0
+    twoParties:
+      let sum1 = party1.share(42) - 42
+      let sum2 = 42 - party2.obtain(party1)
+      await sum2.reveal()
+      await sum1.reveal()
+      check (await sum1.open()) == 0
+      check (await sum2.open()) == 0
 
   asynctest "multipies by a constant":
     singleParty:
