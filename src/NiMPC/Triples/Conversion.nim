@@ -1,6 +1,6 @@
 import sequtils
-import NiMPC/SecretSharing/Internals
-import NiMPC/ObliviousTransfer
+import ../SecretSharing/Internals
+import ../ObliviousTransfer
 
 proc toShare*(key: Key): Share =
   result = cast[Share](key)
