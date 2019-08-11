@@ -3,6 +3,7 @@ import asynctest
 import parties
 import NiMPC/Parties
 import NiMPC/SecretSharing
+import NiMPC/Random
 import NiMPC/Math
 
 suite "math":

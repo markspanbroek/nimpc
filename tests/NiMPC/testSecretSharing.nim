@@ -2,14 +2,10 @@ import unittest
 import asynctest
 import parties
 import NiMPC/Parties
+import NiMPC/Random
 import NiMPC/SecretSharing
 
 suite "secret sharing":
-
-  asynctest "generates different random numbers":
-    singleParty:
-      let secret1, secret2 = party.random()
-      check (await secret1.open()) != (await secret2.open())
 
   asynctest "opens a shared random value":
     twoParties:

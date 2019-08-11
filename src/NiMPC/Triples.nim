@@ -8,6 +8,7 @@ import Triples/Conversion
 import Triples/Math
 import Triples/Communication
 import LocalRandom
+import Random
 
 type Triple* = tuple[a, b, c: Secret]
 

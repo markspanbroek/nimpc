@@ -6,9 +6,6 @@ import SecretSharing/Internals
 
 export Secret
 
-method random*(party: Party): Future[Secret] {.async,base.} =
-  result = Secret(party: party, share: random[Share]())
-
 method reveal*(secret: Secret, recipient: Party) {.async,base.} =
   let party = secret.party
   await party.send(recipient, secret.share)
