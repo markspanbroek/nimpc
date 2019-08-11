@@ -1,7 +1,9 @@
 import asyncdispatch
 import Parties
 import SecretSharing
+import SecretSharing/Internals
 import Triples
+import Triples/Math
 
 proc `+`(a: Secret, b: Secret): Secret =
   assert a.party == b.party
@@ -50,10 +52,6 @@ proc `*`*(a: Future[Secret], b: uint32): Future[Secret] {.async.} =
 proc `*`*(a: uint32, b: Future[Secret]): Future[Secret] {.async.} =
   result = await (b * a)
 
-converter toFuture(secret: Secret): Future[Secret] =
-  result = newFuture[Secret]()
-  result.complete(secret)
-
 proc `*`(a: Secret, b: Secret): Future[Secret] {.async.} =
   assert a.party == b.party
   let triple = await a.party.triple()
@@ -62,13 +60,13 @@ proc `*`(a: Secret, b: Secret): Future[Secret] {.async.} =
   let closedDelta = b - triple.b
 
   await closedEpsilon.reveal()
-  await closedDelta.reveal()
+  let epsilon = await closedEpsilon.openSumOfShares()
 
-  let epsilon = await closedEpsilon.open()
-  let delta = await closedDelta.open()
+  await closedDelta.reveal()
+  let delta = await closedDelta.openSumOfShares()
 
   result = 
-    await triple.c + epsilon * triple.b + delta * triple.a + epsilon * delta
+    triple.c + (epsilon * triple.b) + (delta * triple.a) + (epsilon * delta)
 
 proc `*`*(a: Future[Secret], b: Future[Secret]): Future[Secret] {.async.} =
   result = await ((await a) * (await b))
