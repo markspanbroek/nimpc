@@ -9,7 +9,7 @@ import Triples/Math
 import Triples/Communication
 import LocalRandom
 
-type Triple = tuple[a, b, c: Secret]
+type Triple* = tuple[a, b, c: Secret]
 
 proc createDummyTriple(party: Party): Future[Triple] {.async.} =
   let count = Share(party.peers.len + 1)
