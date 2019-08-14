@@ -56,12 +56,7 @@ proc createObliviousTriple(party: Party): Future[Triple] {.async.} =
 
   let ci = ai * bi + cij + cji
 
-  # shared sequence of random variables
-  let rClosed = newSeqWith(int(𝛕), party.random())
-  var r: seq[Share]
-  for element in rClosed:
-    await element.reveal()
-    r &= await element.openSumOfShares()
+  let r = newSeqWith(int(𝛕), await party.openRandom())
 
   var shareA, shareB, shareC: Share = 0
   for h in 0..<𝛕:
