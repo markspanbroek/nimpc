@@ -19,12 +19,12 @@ suite "math":
       check (await sum1.open()) == 42
       check (await sum2.open()) == 42
 
-  asynctest "refuses to add numbers from different parties":
+  test "refuses to add numbers from different parties":
     twoParties:
       let a = party1.random()
       let b = party2.random()
       expect Exception:
-        discard await a + b
+        discard a + b
 
   asynctest "adds a constant":
     twoParties:
@@ -44,19 +44,19 @@ suite "math":
       check (await difference1.open()) == 42
       check (await difference2.open()) == 42
 
-  asynctest "refuses to subtract numbers from different parties":
+  test "refuses to subtract numbers from different parties":
     twoParties:
       let a = party1.random()
       let b = party2.random()
       expect Exception:
-        discard await a - b
+        discard a - b
 
   asynctest "subtracts a constant":
     twoParties:
       let sum1 = party1.share(42) - 42
       let sum2 = 42 - party2.obtain(party1)
-      await sum2.reveal()
       await sum1.reveal()
+      await sum2.reveal()
       check (await sum1.open()) == 0
       check (await sum2.open()) == 0
 
@@ -87,4 +87,4 @@ suite "math":
       let a = party1.random()
       let b = party2.random()
       expect Exception:
-        discard await a * b
+        discard a * b

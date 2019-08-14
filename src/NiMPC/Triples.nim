@@ -14,12 +14,9 @@ type Triple* = tuple[a, b, c: Secret]
 
 proc createDummyTriple(party: Party): Future[Triple] {.async.} =
   let count = Share(party.peers.len + 1)
-  let shareA = Share(1)
-  let shareB = Share(2)
-  let shareC = Share(count * 2)
-  result.a = Secret(party: party, share: shareA)
-  result.b = Secret(party: party, share: shareB)
-  result.c = Secret(party: party, share: shareC)
+  result.a = party.rawShare(1)
+  result.b = party.rawShare(2)
+  result.c = party.rawShare(count * 2)
 
 proc createObliviousTriple(party: Party): Future[Triple] {.async.} =
 
@@ -60,7 +57,7 @@ proc createObliviousTriple(party: Party): Future[Triple] {.async.} =
   let ci = ai * bi + cij + cji
 
   # shared sequence of random variables
-  let rClosed = newSeqWith(int(𝛕), await party.random())
+  let rClosed = newSeqWith(int(𝛕), party.random())
   var r: seq[Share]
   for element in rClosed:
     await element.reveal()
@@ -73,9 +70,9 @@ proc createObliviousTriple(party: Party): Future[Triple] {.async.} =
   for h in 0..<𝛕:
     shareC += ci[h] * r[h]
 
-  result.a = Secret(party: party, share: shareA)
-  result.b = Secret(party: party, share: shareB)
-  result.c = Secret(party: party, share: shareC)
+  result.a = party.rawShare(shareA)
+  result.b = party.rawShare(shareB)
+  result.c = party.rawShare(shareC)
 
 proc triple*(party: Party): Future[Triple] {.async.} =
   if party.peers.len == 0:

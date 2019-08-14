@@ -30,8 +30,8 @@ suite "secret sharing":
 
   asynctest "shares a secret":
     twoParties:
-      let secret1 = await party1.share(42)
-      let secret2 = await party2.obtain(party1)
+      let secret1 = party1.share(42)
+      let secret2 = party2.obtain(party1)
       await secret1.reveal(party2)
       let opened = await secret2.open()
       check opened == 42

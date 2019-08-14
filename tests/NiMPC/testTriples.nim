@@ -12,7 +12,10 @@ suite "multiplication triples":
     asynctest "generates a dummy triple":
       singleParty:
         let triple = await party.triple()
-        check triple.a.share * triple.b.share == triple.c.share
+        let a = await triple.a.share
+        let b = await triple.b.share
+        let c = await triple.c.share
+        check a * b == c
 
   suite "two parties":
 
