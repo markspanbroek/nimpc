@@ -73,9 +73,9 @@ proc multiply(a: Secret, b: Secret): Future[Secret] {.async.} =
   let closedEpsilon = a - triple.a
   let closedDelta = b - triple.b
 
-  await closedEpsilon.reveal()
+  await closedEpsilon.disclose()
   let epsilon = await closedEpsilon.openSumOfShares()
-  await closedDelta.reveal()
+  await closedDelta.disclose()
   let delta = await closedDelta.openSumOfShares()
 
   result = 

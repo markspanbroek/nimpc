@@ -23,9 +23,9 @@ suite "multiplication triples":
       twoParties:
         let (fut1, fut2) = (party1.triple(), party2.triple())
         let (triple1, triple2) = (await fut1, await fut2)
-        await triple2.a.reveal()
-        await triple2.b.reveal()
-        await triple2.c.reveal()
+        await triple2.a.disclose()
+        await triple2.b.disclose()
+        await triple2.c.disclose()
         result.a = await triple1.a.open()
         result.b = await triple1.b.open()
         result.c = await triple1.c.open()

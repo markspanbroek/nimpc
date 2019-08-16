@@ -9,5 +9,5 @@ method random*(party: Party): Secret {.base.} =
 
 method openRandom*(party: Party): Future[uint32] {.async,base.} =
   let closed = party.random()
-  await closed.reveal()
+  await closed.disclose()
   result = await closed.open()

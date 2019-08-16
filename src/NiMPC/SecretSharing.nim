@@ -6,14 +6,14 @@ import SecretSharing/Internals
 
 export Secret
 
-method reveal*(secret: Secret, recipient: Party) {.async,base.} =
+method disclose*(secret: Secret, recipient: Party) {.async,base.} =
   let party = secret.party
   await party.send(recipient, await secret.share)
 
-proc reveal*(secret: Secret) {.async.} =
+proc disclose*(secret: Secret) {.async.} =
   let party = secret.party
   for recipient in party.peers:
-    await secret.reveal(recipient)
+    await secret.disclose(recipient)
 
 proc sum(shares: seq[Share]): uint64 =
   result = shares.foldl(a + b)

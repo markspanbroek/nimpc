@@ -11,11 +11,11 @@ suite "math":
     multiparty:
       computation:
         let sum = party.share(40) + party.obtain(parties[1])
-        await sum.reveal()
+        await sum.disclose()
         check (await sum.open()) == 42
       computation:
         let sum = party.obtain(parties[0]) + party.share(2)
-        await sum.reveal()
+        await sum.disclose()
         check (await sum.open()) == 42
 
   test "refuses to add numbers from different parties":
@@ -29,22 +29,22 @@ suite "math":
     multiparty:
       computation:
         let sum = party.share(40) + 2
-        await sum.reveal()
+        await sum.disclose()
         check (await sum.open()) == 42
       computation:
         let sum = party.obtain(parties[0]) + 2
-        await sum.reveal()
+        await sum.disclose()
         check (await sum.open()) == 42
 
   test "subtracts secret numbers":
     multiparty:
       computation:
         let difference = party.share(44) - party.obtain(parties[1])
-        await difference.reveal()
+        await difference.disclose()
         check (await difference.open()) == 42
       computation:
         let difference = party.obtain(parties[0]) - party.share(2)
-        await difference.reveal()
+        await difference.disclose()
         check (await difference.open()) == 42
 
   test "refuses to subtract numbers from different parties":
@@ -58,33 +58,33 @@ suite "math":
     multiparty:
       computation:
         let sum = party.share(42) - 42
-        await sum.reveal()
+        await sum.disclose()
         check (await sum.open()) == 0
       computation:
         let sum = 42 - party.obtain(parties[0])
-        await sum.reveal()
+        await sum.disclose()
         check (await sum.open()) == 0
 
   test "multipies by a constant":
     multiparty:
       computation:
         let product = party.share(21) * 2
-        await product.reveal()
+        await product.disclose()
         check (await product.open()) == 42
       computation:
         let product = 2 * party.obtain(parties[0])
-        await product.reveal()
+        await product.disclose()
         check (await product.open()) == 42
 
   test "multiplies secret numbers":
     multiparty:
       computation:
         let product = party.share(21) * party.obtain(parties[1])
-        await product.reveal()
+        await product.disclose()
         check (await product.open()) == 42
       computation:        
         let product = party.obtain(parties[0]) * party.share(2)
-        await product.reveal()
+        await product.disclose()
         check (await product.open()) == 42
 
   test "refuses to multiply numbers from different parties":
