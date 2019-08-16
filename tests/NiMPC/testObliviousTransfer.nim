@@ -39,20 +39,17 @@ suite "oblivious transfer between two parties":
         (choiceBits, receiverKeys) = await receiverTransfer
 
     asynctest "returns multiples of 4 keys":
-      twoParties:
-        await performOT(8)
-        checkKeyLengths 8
+      await performOT(8)
+      checkKeyLengths 8
 
     asynctest "returns number of keys that is not a multiple of 4":
-      twoParties:
-        await performOT(7)
-        checkKeyLengths 7
+      await performOT(7)
+      checkKeyLengths 7
 
     asynctest "choice bits indicate which sender key has been chosen":
-      twoParties:
-        await performOT(8)
-        for i in 0..<choiceBits.len:
-          if choiceBits[i]:
-            check receiverKeys[i] == senderKeys1[i]
-          else:
-            check receiverKeys[i] == senderKeys0[i]
+      await performOT(8)
+      for i in 0..<choiceBits.len:
+        if choiceBits[i]:
+          check receiverKeys[i] == senderKeys1[i]
+        else:
+          check receiverKeys[i] == senderKeys0[i]
