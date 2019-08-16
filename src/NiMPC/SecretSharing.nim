@@ -21,6 +21,10 @@ proc sum(shares: seq[Share]): uint64 =
 method open*(secret: Secret): Future[uint32] {.async,base.} =
   result = uint32(await secret.openSumOfShares())
 
+proc reveal*(secret: Secret): Future[uint32] {.async.} =
+  await secret.disclose()
+  result = await secret.open()
+
 proc shareWithPeers(party: Party, input: uint32): Future[Share] {.async.} =
   var shares = @[random[Share]()]
   for receiver in party.peers:
