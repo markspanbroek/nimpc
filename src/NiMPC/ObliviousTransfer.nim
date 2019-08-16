@@ -24,7 +24,7 @@ proc truncate[T,U](pair: (seq[T], seq[U]), amount: uint): (seq[T], seq[U]) =
   result[0] = pair[0].truncate(amount)
   result[1] = pair[1].truncate(amount)
 
-proc sendOT*(sender, receiver: Party, amount:uint=4): 
+proc sendOT*(sender, receiver: Party, amount:uint=4):
              Future[SendResult] {.async.} =
   let otSenders = newSeqWith(int(numberOfExchanges(amount)), Sender())
   let senderMessages = otSenders.generateSecrets()

@@ -30,14 +30,14 @@ suite "oblivious transfer between two parties":
       check senderKeys0 != senderKeys1
 
   suite "any amount":
-    
+
     proc performOT(amount: uint) {.async.} =
       twoParties:
         let senderTransfer = party1.sendOT(party2, amount)
         let receiverTransfer = party2.receiveOT(party1, amount)
         (senderKeys0, senderKeys1) = await senderTransfer
         (choiceBits, receiverKeys) = await receiverTransfer
-  
+
     asynctest "returns multiples of 4 keys":
       twoParties:
         await performOT(8)

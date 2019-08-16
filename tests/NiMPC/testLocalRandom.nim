@@ -4,7 +4,7 @@ import math
 import NiMPC/LocalRandom
 
 suite "random":
-  
+
   test "generates random values of different types":
     check random[int]() != random[int]()
     check random[uint64]() != random[uint64]()

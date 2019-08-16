@@ -6,7 +6,7 @@ import NiMPC/ObliviousTransfer
 import NiMPC/Triples/Conversion
 
 suite "conversions for triple generation":
-  
+
   test "converts key to share":
     let key = random[Key]()
     check toShare(key) == cast[Share](key)

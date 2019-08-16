@@ -4,7 +4,7 @@ import parties
 import NiMPC/Communication
 
 suite "communication":
-  
+
   asynctest "can send from one party to another":
     twoParties:
       await party1.send(party2, 42)

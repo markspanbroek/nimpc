@@ -42,7 +42,7 @@ proc `-`*(a: Secret, b: uint32): Secret =
     result = Secret(party: a.party, share: a.share - b)
   else:
     result = a
-  
+
 proc `-`*(a: uint32, b: Secret): Secret =
   if b.party.isFirst:
     result = Secret(party: b.party, share: a - b.share)
@@ -75,7 +75,7 @@ proc multiply(a: Secret, b: Secret): Future[Secret] {.async.} =
   await closedDelta.disclose()
   let delta = await closedDelta.openSumOfShares()
 
-  result = 
+  result =
     triple.c + (epsilon * triple.b) + (delta * triple.a) + (epsilon * delta)
 
 proc toShare(secret: Future[Secret]): Future[Share] {.async.} =

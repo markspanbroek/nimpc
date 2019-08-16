@@ -24,7 +24,7 @@ proc createObliviousTriple(party: Party): Future[Triple] {.async.} =
   # https://eprint.iacr.org/2018/482.pdf, Figure 12
 
   const 𝛕 = 192'u
-  
+
   let Pi = party
   let Pj = party.peers[0]
 
@@ -33,7 +33,7 @@ proc createObliviousTriple(party: Party): Future[Triple] {.async.} =
 
   if Pi < Pj:
     (q0, q1) = await Pi.sendOT(Pj, 𝛕)
-    (ai, sij) = await Pi.receiveOT(Pj, 𝛕)    
+    (ai, sij) = await Pi.receiveOT(Pj, 𝛕)
   else:
     (ai, sij) = await Pi.receiveOT(Pj, 𝛕)
     (q0, q1) = await Pi.sendOT(Pj, 𝛕)

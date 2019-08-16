@@ -11,8 +11,8 @@ type
 proc generateSecrets*(senders: Senders): seq[SenderMessage] =
   result = senders.mapIt(it.generateSecret())
 
-proc generateSecrets*(receivers: Receivers, 
-                      senderMessages: SenderMessages): 
+proc generateSecrets*(receivers: Receivers,
+                      senderMessages: SenderMessages):
                       tuple[bits: seq[bool], messages: seq[ReceiverMessage]] =
   assert receivers.len == senderMessages.len
   for i in 0..<receivers.len:
@@ -20,7 +20,7 @@ proc generateSecrets*(receivers: Receivers,
     result.bits &= bits.mapIt(bool(it))
     result.messages &= message
 
-proc generateKeys*(senders: Senders, 
+proc generateKeys*(senders: Senders,
                    receiverMessages: ReceiverMessages): (seq[Key], seq[Key]) =
   assert senders.len == receiverMessages.len
   for i in 0..<senders.len:

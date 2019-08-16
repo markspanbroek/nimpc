@@ -20,7 +20,7 @@ suite "secret sharing":
       let value1 = party1.share(42)
       let value2 = party2.obtain(party1)
       let value3 = party3.obtain(party1)
-      
+
       await value1.disclose()
       await value2.disclose()
       await value3.disclose()

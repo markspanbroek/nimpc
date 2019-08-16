@@ -6,7 +6,7 @@ import NiMPC/Triples/Math
 import NiMPC/SecretSharing/Internals
 
 suite "math for triple generation":
-  
+
   test "multiplies with a boolean":
     check true * 42 == 42
     check false * 42 == 0

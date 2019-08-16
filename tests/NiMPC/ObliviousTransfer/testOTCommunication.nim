@@ -18,7 +18,7 @@ suite "oblivious transfer communication":
       let messages = senders.generateSecrets()
       await party1.send(party2, messages)
       check (await party2.receiveSenderMessages(party1)) == messages
-  
+
   asynctest "can send receiver messages":
     twoParties:
       let (_, messages) = receivers.generateSecrets(senders.generateSecrets())

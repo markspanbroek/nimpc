@@ -53,7 +53,7 @@ suite "sequence of oblivious transfers":
     check keys1.len == 8
     check keys0 != repeat(empty, 8)
     check keys1 != repeat(empty, 8)
-  
+
   test "raises error when given incorrect number of receiver messages":
     let senderMessages = senders.generateSecrets()
     var (_, receiverMessages) = receivers.generateSecrets(senderMessages)

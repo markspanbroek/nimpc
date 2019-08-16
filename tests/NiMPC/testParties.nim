@@ -4,7 +4,7 @@ import math
 import NiMPC/Parties
 
 suite "parties":
-  
+
   test "can create a party":
     check Party() != nil
 
