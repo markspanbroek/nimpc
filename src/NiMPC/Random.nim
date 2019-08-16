@@ -4,10 +4,10 @@ import Parties
 import SecretSharing
 import SecretSharing/Internals
 
-method random*(party: Party): Secret {.base.} =
+proc random*(party: Party): Secret =
   result = party.rawShare(random[Share]())
 
-method openRandom*(party: Party): Future[uint32] {.async,base.} =
+proc openRandom*(party: Party): Future[uint32] {.async.} =
   let closed = party.random()
   await closed.disclose()
   result = await closed.open()

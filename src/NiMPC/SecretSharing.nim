@@ -6,7 +6,7 @@ import SecretSharing/Internals
 
 export Secret
 
-method disclose*(secret: Secret, recipient: Party) {.async,base.} =
+proc disclose*(secret: Secret, recipient: Party) {.async.} =
   let party = secret.party
   await party.send(recipient, await secret.share)
 
@@ -18,7 +18,7 @@ proc disclose*(secret: Secret) {.async.} =
 proc sum(shares: seq[Share]): uint64 =
   result = shares.foldl(a + b)
 
-method open*(secret: Secret): Future[uint32] {.async,base.} =
+proc open*(secret: Secret): Future[uint32] {.async.} =
   result = uint32(await secret.openSumOfShares())
 
 proc reveal*(secret: Secret): Future[uint32] {.async.} =
@@ -32,8 +32,8 @@ proc shareWithPeers(party: Party, input: uint32): Future[Share] {.async.} =
     await party.send(receiver, shares[^1])
   result = shares[0] - sum(shares) + input
 
-method share*(party: Party, input: uint32): Secret {.base.} =
+proc share*(party: Party, input: uint32): Secret =
   result = Secret(party: party, share: shareWithPeers(party, input))
 
-method obtain*(party: Party, sender: Party): Secret {.base.} =
+proc obtain*(party: Party, sender: Party): Secret =
   result = Secret(party: party, share: party.receiveUint64(sender))
