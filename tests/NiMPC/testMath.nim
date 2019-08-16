@@ -17,9 +17,8 @@ suite "math":
         check (await sum.reveal()) == 42
 
   test "refuses to add numbers from different parties":
-    let party1, party2 = Party()
-    let a = party1.random()
-    let b = party2.random()
+    let a = Party().random()
+    let b = Party().random()
     expect Exception:
       discard a + b
 
@@ -42,9 +41,8 @@ suite "math":
         check (await difference.reveal()) == 42
 
   test "refuses to subtract numbers from different parties":
-    let party1, party2 = Party()
-    let a = party1.random()
-    let b = party2.random()
+    let a = Party().random()
+    let b = Party().random()
     expect Exception:
       discard a - b
 
@@ -76,8 +74,7 @@ suite "math":
         check (await product.reveal()) == 42
 
   test "refuses to multiply numbers from different parties":
-    let party1, party2 = Party()
-    let a = party1.random()
-    let b = party2.random()
+    let a = Party().random()
+    let b = Party().random()
     expect Exception:
       discard a * b
