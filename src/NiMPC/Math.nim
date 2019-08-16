@@ -33,9 +33,6 @@ proc `-`(a: Future[Share], b: uint32): Future[Share] {.async.} =
 proc `-`(a: uint32, b: Future[Share]): Future[Share] {.async.} =
   result = Share(a) - (await b)
 
-proc `-`(a: Future[Share]): Future[Share] {.async.} =
-  result = 0'u64-(await a)
-
 proc `-`*(a: Secret, b: Secret): Secret =
   assert a.party == b.party
   result = Secret(party: a.party, share: a.share - b.share)
