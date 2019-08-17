@@ -32,12 +32,10 @@ suite "multiplication triples":
       result = (a, b, c)
 
     asynctest "generates a correct triple":
-      twoParties:
-        let (a,b,c) = await createAndOpenTriple()
-        check a * b == c
+      let (a,b,c) = await createAndOpenTriple()
+      check a * b == c
 
     asynctest "generates random triples":
-      twoParties:
-        let triple1 = await createAndOpenTriple()
-        let triple2 = await createAndOpenTriple()
-        check triple1 != triple2
+      let triple1 = await createAndOpenTriple()
+      let triple2 = await createAndOpenTriple()
+      check triple1 != triple2
