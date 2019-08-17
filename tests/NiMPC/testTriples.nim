@@ -4,6 +4,7 @@ import parties
 import NiMPC/Parties
 import NiMPC/SecretSharing
 import NiMPC/Triples
+import NiMPC/MultipartyComputation
 
 suite "multiplication triples":
 
@@ -20,15 +21,15 @@ suite "multiplication triples":
   suite "two parties":
 
     proc createAndOpenTriple(): Future[tuple[a, b, c: uint32]] {.async.} =
-      twoParties:
-        let (fut1, fut2) = (party1.triple(), party2.triple())
-        let (triple1, triple2) = (await fut1, await fut2)
-        await triple2.a.disclose()
-        await triple2.b.disclose()
-        await triple2.c.disclose()
-        result.a = await triple1.a.open()
-        result.b = await triple1.b.open()
-        result.c = await triple1.c.open()
+      var a, b, c: uint32
+      multiparty:
+        computation:
+          let triple = await party.triple()
+          (a, b, c) = await triple.open()
+        computation:
+          let triple = await party.triple()
+          await triple.disclose()
+      result = (a, b, c)
 
     asynctest "generates a correct triple":
       twoParties:

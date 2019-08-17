@@ -74,3 +74,13 @@ proc triple*(party: Party): Future[Triple] {.async.} =
     result = await party.createDummyTriple()
   else:
     result = await party.createObliviousTriple()
+
+proc open*(triple: Triple): Future[tuple[a,b,c: uint32]] {.async.} =
+  result.a = await triple.a.open()
+  result.b = await triple.b.open()
+  result.c = await triple.c.open()
+
+proc disclose*(triple: Triple) {.async.} =
+  await triple.a.disclose()
+  await triple.b.disclose()
+  await triple.c.disclose()
