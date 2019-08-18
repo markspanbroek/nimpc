@@ -2,7 +2,6 @@ import asyncdispatch
 import simpleot
 import ../Parties
 import ../Communication
-export simpleot
 export Communication
 
 proc receiveSenderMessages*(recipient: Party, sender: Party):

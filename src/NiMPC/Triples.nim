@@ -28,17 +28,16 @@ proc createObliviousTriple(party: Party): Future[Triple] {.async.} =
   let Pi = party
   let Pj = party.peers[0]
 
-  var q0, q1, sij: seq[Key]
-  var ai: seq[bool]
+  var ai = generateChoiceBits(𝛕)
+  let bi = random[Share]()
 
+  var q0, q1, sij: seq[Key]
   if Pi < Pj:
     (q0, q1) = await Pi.sendOT(Pj, 𝛕)
-    (ai, sij) = await Pi.receiveOT(Pj, 𝛕)
+    sij = await Pi.receiveOT(Pj, ai)
   else:
-    (ai, sij) = await Pi.receiveOT(Pj, 𝛕)
+    sij = await Pi.receiveOT(Pj, ai)
     (q0, q1) = await Pi.sendOT(Pj, 𝛕)
-
-  let bi = random[Share]()
 
   var dij: seq[Share]
   for h in 0..<𝛕:

@@ -21,6 +21,8 @@ suite "oblivious transfer communication":
 
   asynctest "can send receiver messages":
     twoParties:
-      let (_, messages) = receivers.generateSecrets(senders.generateSecrets())
+      let senderMessages = senders.generateSecrets()
+      let bits = generateChoiceBits(uint(4 * receivers.len))
+      let messages = receivers.generateSecrets(senderMessages, bits)
       await party1.send(party2, messages)
       check (await party2.receiveReceiverMessages(party1)) == messages

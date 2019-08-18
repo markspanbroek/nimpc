@@ -18,34 +18,35 @@ suite "sequence of oblivious transfers":
     check messages.len == 2
     check messages != @[empty, empty]
 
+  test "generates random choice bits":
+    var bits1, bits2 = generateChoiceBits(1024)
+    check bits1 != bits2
+
   test "generates secrets for a sequence of receivers":
     let senderMessages = senders.generateSecrets()
-    let (_, receiverMessages) = receivers.generateSecrets(senderMessages)
+    let bits = generateChoiceBits(uint(receivers.len * 4))
+    let receiverMessages = receivers.generateSecrets(senderMessages, bits)
     var empty: ReceiverMessage
     check receiverMessages.len == 2
     check receiverMessages != @[empty, empty]
 
-  test "generates choice bits for a sequence of receivers":
-    let senderMessages = senders.generateSecrets()
-    var bits1, bits2: seq[bool]
-    var tries = 10
-    while (bits1 == bits2 and tries > 0):
-      bits1 = receivers.generateSecrets(senderMessages).bits
-      bits2 = receivers.generateSecrets(senderMessages).bits
-      dec tries
-    check bits1.len == 8
-    check bits2.len == 8
-    check bits1 != bits2
-
   test "raises error when given incorrect number of sender messages":
+    let bits = generateChoiceBits(uint(receivers.len * 4))
     var senderMessages = senders.generateSecrets()
     senderMessages = senderMessages.cycle(2)
     expect Exception:
-      discard receivers.generateSecrets(senderMessages)
+      discard receivers.generateSecrets(senderMessages, bits)
+
+  test "raises error when given incorrect number of choice bits":
+    let bits = generateChoiceBits(uint((receivers.len + 1) * 4))
+    var senderMessages = senders.generateSecrets()
+    expect Exception:
+      discard receivers.generateSecrets(senderMessages, bits)
 
   test "generates keys for a sequence of senders":
     let senderMessages = senders.generateSecrets()
-    let (_, receiverMessages) = receivers.generateSecrets(senderMessages)
+    let bits = generateChoiceBits(uint(receivers.len * 4))
+    let receiverMessages = receivers.generateSecrets(senderMessages, bits)
     let (keys0, keys1) = senders.generateKeys(receiverMessages)
     var empty: Key
     check keys0.len == 8
@@ -55,14 +56,16 @@ suite "sequence of oblivious transfers":
 
   test "raises error when given incorrect number of receiver messages":
     let senderMessages = senders.generateSecrets()
-    var (_, receiverMessages) = receivers.generateSecrets(senderMessages)
+    let bits = generateChoiceBits(uint(receivers.len * 4))
+    var receiverMessages = receivers.generateSecrets(senderMessages, bits)
     receiverMessages = receiverMessages.cycle(2)
     expect Exception:
       discard senders.generateKeys(receiverMessages)
 
   test "generates keys for a sequence of receivers":
     let senderMessages = senders.generateSecrets()
-    discard receivers.generateSecrets(senderMessages)
+    let bits = generateChoiceBits(uint(receivers.len * 4))
+    discard receivers.generateSecrets(senderMessages, bits)
     let keys = receivers.generateKeys()
     var empty: Key
     check keys.len == 8

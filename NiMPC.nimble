@@ -12,4 +12,4 @@ srcDir        = "src"
 
 requires "nim >= 0.20.0"
 requires "sysrandom >= 1.1.0"
-requires "simpleot >= 0.3.0"
+requires "simpleot >= 0.4.0"

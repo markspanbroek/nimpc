@@ -18,10 +18,11 @@ suite "oblivious transfer between two parties":
 
     asyncsetup:
       twoParties:
+        choiceBits = generateChoiceBits()
         let senderTransfer = party1.sendOT(party2)
-        let receiverTransfer = party2.receiveOT(party1)
+        let receiverTransfer = party2.receiveOT(party1, choiceBits)
         (senderKeys0, senderKeys1) = await senderTransfer
-        (choiceBits, receiverKeys) = await receiverTransfer
+        receiverKeys = await receiverTransfer
 
     test "returns 4 keys":
       checkKeyLengths 4
@@ -33,18 +34,19 @@ suite "oblivious transfer between two parties":
 
     proc performOT(amount: uint) {.async.} =
       twoParties:
+        choiceBits = generateChoiceBits(amount)
         let senderTransfer = party1.sendOT(party2, amount)
-        let receiverTransfer = party2.receiveOT(party1, amount)
+        let receiverTransfer = party2.receiveOT(party1, choiceBits)
         (senderKeys0, senderKeys1) = await senderTransfer
-        (choiceBits, receiverKeys) = await receiverTransfer
+        receiverKeys = await receiverTransfer
 
     asynctest "returns multiples of 4 keys":
       await performOT(8)
       checkKeyLengths 8
 
-    asynctest "returns number of keys that is not a multiple of 4":
-      await performOT(7)
-      checkKeyLengths 7
+    asynctest "raises when number of keys is not a multiple of 4":
+      expect Exception:
+        await performOT(7)
 
     asynctest "choice bits indicate which sender key has been chosen":
       await performOT(8)
