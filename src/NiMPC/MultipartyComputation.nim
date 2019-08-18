@@ -3,12 +3,9 @@ import sequtils
 import Parties
 export asyncdispatch
 
-proc waitFor(futures: openArray[Future[void]]) =
-  for future in futures:
-    waitFor future
-
 proc waitFor(asyncprocs: openArray[proc: Future[void]]) =
-  waitFor asyncprocs.mapIt(it())
+  let futures = asyncprocs.mapIt(it())
+  waitFor all(futures)
 
 template multiparty*(statements) =
   var parties {.inject.}: seq[Party]
