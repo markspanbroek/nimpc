@@ -1,7 +1,7 @@
 import asyncdispatch
 import Parties
 import SecretSharing
-import SecretSharing/Internals
+import SecretSharing/RawShares
 import Triples
 import Triples/Math
 
@@ -61,10 +61,6 @@ proc `*`*(a: uint32, b: Secret): Secret =
 proc evaluate(secret: Secret): Future[void] {.async.} =
   discard await secret.share
 
-proc revealSumOfShares(secret: Secret): Future[Share] {.async.} =
-  await secret.disclose()
-  result = await secret.openSumOfShares()
-
 proc multiply(x: Secret, y: Secret): Future[Secret] {.async.} =
   await evaluate(x)
   await evaluate(y)
@@ -74,8 +70,8 @@ proc multiply(x: Secret, y: Secret): Future[Secret] {.async.} =
 
   let (a, b, c) = await x.party.triple()
 
-  let ϵ = await (x - a).revealSumOfShares()
-  let δ = await (y - b).revealSumOfShares()
+  let ϵ = await (x - a).revealRawShare()
+  let δ = await (y - b).revealRawShare()
 
   result = c + (ϵ * b) + (δ * a) + (ϵ * δ)
 

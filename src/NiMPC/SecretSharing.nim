@@ -19,7 +19,7 @@ proc sum(shares: seq[Share]): uint64 =
   result = shares.foldl(a + b)
 
 proc open*(secret: Secret): Future[uint32] {.async.} =
-  result = uint32(await secret.openSumOfShares())
+  result = uint32(await secret.openRawShare())
 
 proc reveal*(secret: Secret): Future[uint32] {.async.} =
   await secret.disclose()

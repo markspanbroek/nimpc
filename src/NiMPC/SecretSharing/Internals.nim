@@ -16,7 +16,7 @@ proc rawShare*(party: Party, share: Share): Secret =
   result.party = party
   result.share = share.toFuture()
 
-proc openSumOfShares*(secret: Secret): Future[Share] {.async.} =
+proc openRawShare*(secret: Secret): Future[Share] {.async.} =
   let party = secret.party
   var shares = @[await secret.share]
   for sender in party.peers:
