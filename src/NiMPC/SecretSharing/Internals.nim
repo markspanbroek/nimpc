@@ -9,13 +9,6 @@ type
     party*: Party
     share*: Future[Share]
 
-proc toFuture(share: Share): Future[Share] {.async.} =
-  result = share
-
-proc rawShare*(party: Party, share: Share): Secret =
-  result.party = party
-  result.share = share.toFuture()
-
 proc openRawShare*(secret: Secret): Future[Share] {.async.} =
   let party = secret.party
   var shares = @[await secret.share]

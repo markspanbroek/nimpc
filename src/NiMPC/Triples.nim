@@ -2,7 +2,7 @@ import asyncdispatch
 import sequtils
 import Parties
 import SecretSharing
-import SecretSharing/Internals
+import SecretSharing/RawShares
 import ObliviousTransfer
 import Triples/Conversion
 import Triples/Math

@@ -3,7 +3,7 @@ import asynctest
 import asyncdispatch
 import NiMPC/Parties
 import NiMPC/Triples/Math
-import NiMPC/SecretSharing/Internals
+import NiMPC/SecretSharing/RawShares
 
 suite "math for triple generation":
 

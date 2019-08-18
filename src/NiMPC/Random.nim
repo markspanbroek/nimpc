@@ -2,7 +2,7 @@ import asyncdispatch
 import LocalRandom
 import Parties
 import SecretSharing
-import SecretSharing/Internals
+import SecretSharing/RawShares
 
 proc random*(party: Party): Secret =
   result = party.rawShare(random[Share]())
