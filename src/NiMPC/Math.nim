@@ -61,22 +61,23 @@ proc `*`*(a: uint32, b: Secret): Secret =
 proc evaluate(secret: Secret): Future[void] {.async.} =
   discard await secret.share
 
-proc multiply(a: Secret, b: Secret): Future[Secret] {.async.} =
-  await evaluate(a)
-  await evaluate(b)
+proc revealSumOfShares(secret: Secret): Future[Share] {.async.} =
+  await secret.disclose()
+  result = await secret.openSumOfShares()
 
-  let triple = await a.party.triple()
+proc multiply(x: Secret, y: Secret): Future[Secret] {.async.} =
+  await evaluate(x)
+  await evaluate(y)
 
-  let closedEpsilon = a - triple.a
-  let closedDelta = b - triple.b
+  # Implementation of the multiplication protocol from the SPDZ2k paper:
+  # https://eprint.iacr.org/2018/482.pdf, Figure 9
 
-  await closedEpsilon.disclose()
-  let epsilon = await closedEpsilon.openSumOfShares()
-  await closedDelta.disclose()
-  let delta = await closedDelta.openSumOfShares()
+  let (a, b, c) = await x.party.triple()
 
-  result =
-    triple.c + (epsilon * triple.b) + (delta * triple.a) + (epsilon * delta)
+  let ϵ = await (x - a).revealSumOfShares()
+  let δ = await (y - b).revealSumOfShares()
+
+  result = c + (ϵ * b) + (δ * a) + (ϵ * δ)
 
 proc toShare(secret: Future[Secret]): Future[Share] {.async.} =
   result = await (await secret).share
