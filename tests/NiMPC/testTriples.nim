@@ -39,3 +39,23 @@ suite "multiplication triples":
       let triple1 = await createAndOpenTriple()
       let triple2 = await createAndOpenTriple()
       check triple1 != triple2
+
+  suite "more than two parties":
+
+    proc createAndOpenTriple(): Future[tuple[a, b, c: uint32]] {.async.} =
+      var a, b, c: uint32
+      multiparty:
+        computation:
+          let triple = await party.triple()
+          (a, b, c) = await triple.open()
+        computation:
+          let triple = await party.triple()
+          await triple.disclose()
+        computation:
+          let triple = await party.triple()
+          await triple.disclose()
+        result = (a, b, c)
+
+    asynctest "generates a correct triple":
+      let (a,b,c) = await createAndOpenTriple()
+      check a * b == c

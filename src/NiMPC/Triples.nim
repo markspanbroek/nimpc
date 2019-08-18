@@ -26,34 +26,37 @@ proc createObliviousTriple(party: Party): Future[Triple] {.async.} =
   const 𝛕 = 192'u
 
   let Pi = party
-  let Pj = party.peers[0]
 
-  var ai = generateChoiceBits(𝛕)
+  let ai = generateChoiceBits(𝛕)
   let bi = random[Share]()
 
-  var q0, q1, sij: seq[Key]
-  if Pi < Pj:
-    (q0, q1) = await Pi.sendOT(Pj, 𝛕)
-    sij = await Pi.receiveOT(Pj, ai)
-  else:
-    sij = await Pi.receiveOT(Pj, ai)
-    (q0, q1) = await Pi.sendOT(Pj, 𝛕)
+  var ci = ai * bi
 
-  var dij: seq[Share]
-  for h in 0..<𝛕:
-    dij &= q0[h].toShare() - q1[h].toShare() + bi
+  for Pj in party.peers:
 
-  await Pi.send(Pj, dij)
-  let dji = await Pi.receiveShares(Pj)
+    var q0, q1, sij: seq[Key]
+    if Pi < Pj:
+      (q0, q1) = await Pi.sendOT(Pj, 𝛕)
+      sij = await Pi.receiveOT(Pj, ai)
+    else:
+      sij = await Pi.receiveOT(Pj, ai)
+      (q0, q1) = await Pi.sendOT(Pj, 𝛕)
 
-  var tij: array[𝛕, Share]
-  for h in 0..<𝛕:
-    tij[h] = sij[h].toShare() + ai[h] * dji[h]
+    var dij: seq[Share]
+    for h in 0..<𝛕:
+      dij &= q0[h].toShare() - q1[h].toShare() + bi
 
-  let cij = tij
-  let cji = -q0.toShares()
+    await Pi.send(Pj, dij)
+    let dji = await Pi.receiveShares(Pj)
 
-  let ci = ai * bi + cij + cji
+    var tij: array[𝛕, Share]
+    for h in 0..<𝛕:
+      tij[h] = sij[h].toShare() + ai[h] * dji[h]
+
+    let cij = tij
+    let cji = -q0.toShares()
+
+    ci = ci + cij + cji
 
   let r = newSeqWith(int(𝛕), await party.openRandom())
 

@@ -72,6 +72,9 @@ suite "math":
       computation:
         let product = party.obtain(parties[0]) * party.share(2)
         check (await product.reveal()) == 42
+      computation:
+        let product = party.obtain(parties[0]) * party.obtain(parties[1])
+        check (await product.reveal()) == 42
 
   test "refuses to multiply numbers from different parties":
     let a = Party().random()
