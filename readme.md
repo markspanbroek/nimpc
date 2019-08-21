@@ -1,7 +1,7 @@
 NiMPC
 =====
 
-A Secure Multi-party Computation (MPC) library for the [Nim][nim] programming
+A secure multi-party computation (MPC) library for the [Nim][nim] programming
 language. Allows you to do joint computations with multiple parties while each
 party keeps their inputs private. We're working towards an implementation of the
 [SPDZ2k][spdz2k] protocol.
