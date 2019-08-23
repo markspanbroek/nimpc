@@ -9,7 +9,7 @@ suite "communication":
     twoParties:
       await party1.send(party2, 42)
 
-  asynctest "can receive values for other party":
+  asynctest "can receive values from other party":
     twoParties:
       await party1.send(party2, 42)
       check (await party2.receiveUint64(party1)) == 42
