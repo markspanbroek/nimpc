@@ -14,7 +14,7 @@ type
   SendResult = (Keys, Keys)
   ReceiveResult = Keys
 
-proc sendOT*(sender, receiver: Party, amount:uint=4):
+proc sendOT*(sender: LocalParty, receiver: Party, amount:uint=4):
              Future[SendResult] {.async.} =
   assert amount mod 4 == 0
   let otSenders = newSeqWith(int(amount div 4), Sender())
@@ -23,7 +23,7 @@ proc sendOT*(sender, receiver: Party, amount:uint=4):
   let receiverMessages = await sender.receiveReceiverMessages(receiver)
   result = otSenders.generateKeys(receiverMessages)
 
-proc receiveOT*(receiver, sender: Party, choiceBits: ChoiceBits):
+proc receiveOT*(receiver: LocalParty, sender: Party, choiceBits: ChoiceBits):
                 Future[ReceiveResult] {.async.} =
   let amount = uint(choiceBits.len)
   assert amount mod 4 == 0

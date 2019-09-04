@@ -30,12 +30,12 @@ suite "math for triple generation":
   asynctest "computes share * secret without losing precision":
     let largeUint64 = 0'u64-2'u64
     let a = Share(largeUint64 div 2)
-    let b = Party().rawShare(2)
+    let b = LocalParty().rawShare(2)
     check (await (a * b).share) == largeUint64
 
   asynctest "computes secret + share without losing precision":
     let largeUint64 = 0'u64-2'u64
-    let a = Party().rawShare(largeUint64 div 2)
+    let a = LocalParty().rawShare(largeUint64 div 2)
     let b = Share(largeUint64 div 2)
     check (await (a + b).share) == largeUint64
 

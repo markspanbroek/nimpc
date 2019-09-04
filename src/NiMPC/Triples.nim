@@ -12,13 +12,13 @@ import Random
 
 type Triple* = tuple[a, b, c: Secret]
 
-proc createDummyTriple(party: Party): Future[Triple] {.async.} =
+proc createDummyTriple(party: LocalParty): Future[Triple] {.async.} =
   let count = Share(party.peers.len + 1)
   result.a = party.rawShare(1)
   result.b = party.rawShare(2)
   result.c = party.rawShare(count * 2)
 
-proc createObliviousTriple(party: Party): Future[Triple] {.async.} =
+proc createObliviousTriple(party: LocalParty): Future[Triple] {.async.} =
 
   # Implementation of the protocol from the SPDZ2k paper:
   # https://eprint.iacr.org/2018/482.pdf, Figure 12
@@ -35,7 +35,7 @@ proc createObliviousTriple(party: Party): Future[Triple] {.async.} =
   for Pj in party.peers:
 
     var q0, q1, sij: seq[Key]
-    if Pi < Pj:
+    if Party(Pi) < Pj:
       (q0, q1) = await Pi.sendOT(Pj, 𝛕)
       sij = await Pi.receiveOT(Pj, ai)
     else:
@@ -71,7 +71,7 @@ proc createObliviousTriple(party: Party): Future[Triple] {.async.} =
   result.b = party.rawShare(shareB)
   result.c = party.rawShare(shareC)
 
-proc triple*(party: Party): Future[Triple] {.async.} =
+proc triple*(party: LocalParty): Future[Triple] {.async.} =
   if party.peers.len == 0:
     result = await party.createDummyTriple()
   else:

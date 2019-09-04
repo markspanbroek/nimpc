@@ -16,6 +16,6 @@ template multiparty*(statements) =
 
 template computation*(statements) =
   block:
-    let party {.inject} = Party()
+    let party {.inject} = LocalParty()
     parties &= party
     computations &= proc {.async.} = statements

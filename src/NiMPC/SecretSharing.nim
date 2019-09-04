@@ -32,8 +32,8 @@ proc shareWithPeers(party: Party, input: uint32): Future[Share] {.async.} =
     await party.send(receiver, shares[^1])
   result = shares[0] - sum(shares) + input
 
-proc share*(party: Party, input: uint32): Secret =
+proc share*(party: LocalParty, input: uint32): Secret =
   result = Secret(party: party, share: shareWithPeers(party, input))
 
-proc obtain*(party: Party, sender: Party): Secret =
+proc obtain*(party: LocalParty, sender: Party): Secret =
   result = Secret(party: party, share: party.receiveUint64(sender))

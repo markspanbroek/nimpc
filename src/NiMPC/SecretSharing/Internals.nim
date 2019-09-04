@@ -6,7 +6,7 @@ import ../Communication
 type
   Share* = uint64
   Secret* = object
-    party*: Party
+    party*: LocalParty
     share*: Future[Share]
 
 proc openRawShare*(secret: Secret): Future[Share] {.async.} =

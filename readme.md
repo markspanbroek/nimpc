@@ -42,7 +42,7 @@ import asyncdispatch
 Connect two parties that will jointly perform a computation. Because we have not
 implemented a networking layer yet, both parties will run on the same machine.
 ```nim
-let party1, party2 = Party()
+let party1, party2 = LocalParty()
 connect(party1, party2)
 ```
 
