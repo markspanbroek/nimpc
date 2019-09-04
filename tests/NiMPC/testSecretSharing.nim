@@ -4,7 +4,6 @@ import parties
 import NiMPC/Parties
 import NiMPC/Random
 import NiMPC/SecretSharing
-import NiMPC/MultipartyComputation
 
 suite "secret sharing":
 
@@ -38,10 +37,10 @@ suite "secret sharing":
       check opened == 42
 
   asynctest "reveals a secret to all parties":
-    multiparty:
+    twoParties:
       computation:
-        let secret = party.share(42)
+        let secret = party1.share(42)
         check (await secret.reveal()) == 42
       computation:
-        let secret = party.obtain(parties[0])
+        let secret = party2.obtain(party1)
         check (await secret.reveal()) == 42

@@ -1,19 +1,20 @@
 import unittest
+import asynctest
+import parties
 import NiMPC/Parties
 import NiMPC/SecretSharing
 import NiMPC/Random
 import NiMPC/Math
-import NiMPC/MultipartyComputation
 
 suite "math":
 
-  test "adds secret numbers":
-    multiparty:
+  asynctest "adds secret numbers":
+    twoParties:
       computation:
-        let sum = party.share(40) + party.obtain(parties[1])
+        let sum = party1.share(40) + party1.obtain(party2)
         check (await sum.reveal()) == 42
       computation:
-        let sum = party.obtain(parties[0]) + party.share(2)
+        let sum = party2.obtain(party1) + party2.share(2)
         check (await sum.reveal()) == 42
 
   test "refuses to add numbers from different parties":
@@ -22,22 +23,22 @@ suite "math":
     expect Exception:
       discard a + b
 
-  test "adds a constant":
-    multiparty:
+  asynctest "adds a constant":
+    twoParties:
       computation:
-        let sum = party.share(40) + 2
+        let sum = party1.share(40) + 2
         check (await sum.reveal()) == 42
       computation:
-        let sum = party.obtain(parties[0]) + 2
+        let sum = party2.obtain(party1) + 2
         check (await sum.reveal()) == 42
 
   test "subtracts secret numbers":
-    multiparty:
+    twoParties:
       computation:
-        let difference = party.share(44) - party.obtain(parties[1])
+        let difference = party1.share(44) - party1.obtain(party2)
         check (await difference.reveal()) == 42
       computation:
-        let difference = party.obtain(parties[0]) - party.share(2)
+        let difference = party2.obtain(party1) - party2.share(2)
         check (await difference.reveal()) == 42
 
   test "refuses to subtract numbers from different parties":
@@ -47,33 +48,33 @@ suite "math":
       discard a - b
 
   test "subtracts a constant":
-    multiparty:
+    twoParties:
       computation:
-        let sum = party.share(42) - 42
+        let sum = party1.share(42) - 42
         check (await sum.reveal()) == 0
       computation:
-        let sum = 42 - party.obtain(parties[0])
+        let sum = 42 - party2.obtain(party1)
         check (await sum.reveal()) == 0
 
   test "multipies by a constant":
-    multiparty:
+    twoParties:
       computation:
-        let product = party.share(21) * 2
+        let product = party1.share(21) * 2
         check (await product.reveal()) == 42
       computation:
-        let product = 2 * party.obtain(parties[0])
+        let product = 2 * party2.obtain(party1)
         check (await product.reveal()) == 42
 
   test "multiplies secret numbers":
-    multiparty:
+    threeParties:
       computation:
-        let product = party.share(21) * party.obtain(parties[1])
+        let product = party1.share(21) * party1.obtain(party2)
         check (await product.reveal()) == 42
       computation:
-        let product = party.obtain(parties[0]) * party.share(2)
+        let product = party2.obtain(party1) * party2.share(2)
         check (await product.reveal()) == 42
       computation:
-        let product = party.obtain(parties[0]) * party.obtain(parties[1])
+        let product = party3.obtain(party1) * party3.obtain(party2)
         check (await product.reveal()) == 42
 
   test "refuses to multiply numbers from different parties":
