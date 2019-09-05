@@ -9,19 +9,12 @@ suite "secret random numbers":
 
   asynctest "generates different random numbers":
     singleParty:
-      let secret1, secret2 = party.random()
-      check (await secret1.open()) != (await secret2.open())
-
-suite "open random numbers":
-
-  asynctest "generates different random numbers":
-    singleParty:
-      let shared1 = party.openRandom()
-      let shared2 = party.openRandom()
+      let shared1 = party.random().reveal()
+      let shared2 = party.random().reveal()
       check (await shared1) != (await shared2)
 
   asynctest "each party has the same random number":
     twoParties:
-      let shared1 = party1.openRandom()
-      let shared2 = party2.openRandom()
+      let shared1 = party1.random().reveal()
+      let shared2 = party2.random().reveal()
       check (await shared1) == (await shared2)
