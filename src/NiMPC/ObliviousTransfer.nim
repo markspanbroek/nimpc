@@ -1,6 +1,5 @@
 import asyncdispatch
 import sequtils
-import algorithm
 import Parties
 import ObliviousTransfer/Sequence
 import ObliviousTransfer/Communication

@@ -1,5 +1,4 @@
 import unittest
-import parties
 import sequtils
 import NiMPC/ObliviousTransfer/Sequence
 

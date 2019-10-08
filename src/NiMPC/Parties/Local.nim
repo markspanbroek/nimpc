@@ -2,7 +2,6 @@ import Basics
 import asyncstreams
 import asyncdispatch
 import tables
-import marshal
 
 type
   Messages = FutureStream[string]

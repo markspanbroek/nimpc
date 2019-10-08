@@ -3,7 +3,6 @@ import asynctest
 import parties
 import NiMPC/LocalRandom
 import NiMPC/Triples/Communication
-import NiMPC/SecretSharing
 import NiMPC/SecretSharing/Internals
 
 suite "communication for triple generation":

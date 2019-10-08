@@ -1,9 +1,7 @@
 import unittest
 import asynctest
-import parties
 import NiMPC/Parties
 import NiMPC/Math
-import NiMPC/SecretSharing
 import NiMPC/SecretSharing/RawShares
 
 suite "secret sharing internals":

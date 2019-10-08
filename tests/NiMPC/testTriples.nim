@@ -2,7 +2,6 @@ import unittest
 import asynctest
 import parties
 import NiMPC/Parties
-import NiMPC/SecretSharing
 import NiMPC/Triples
 
 suite "multiplication triples":
