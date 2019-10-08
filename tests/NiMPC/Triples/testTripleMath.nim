@@ -25,7 +25,7 @@ suite "math for triple generation":
 
   test "negates sequence of shares":
     let a = @[Share(1), Share(2), Share(3)]
-    check -a == @[Share(-1), Share(-2), Share(-3)]
+    check -a == @[Share(0'u64-1), Share(0'u64-2), Share(0'u64-3)]
 
   asynctest "computes share * secret without losing precision":
     let largeUint64 = 0'u64-2'u64
