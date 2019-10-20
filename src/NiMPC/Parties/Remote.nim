@@ -6,6 +6,7 @@ type RemoteParty* = ref object of Party
   socket: AsyncSocket
 
 method connect*(party: RemoteParty, host: string, port: Port) {.async,base.} =
+  assert party.socket == nil
   party.socket = newAsyncSocket()
   await party.socket.connect(host, port)
 
