@@ -26,3 +26,7 @@ suite "remote parties":
       await party.acceptDelivery(Party(), "two")
 
     waitFor all(receiving(), sending())
+
+  test "cannot disconnect when not connected":
+    expect Exception:
+      RemoteParty().disconnect()

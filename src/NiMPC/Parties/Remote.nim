@@ -10,6 +10,7 @@ method connect*(party: RemoteParty, host: string, port: Port) {.async,base.} =
   await party.socket.connect(host, port)
 
 method disconnect*(party: RemoteParty) {.base.} =
+  assert party.socket != nil
   party.socket.close()
 
 method acceptDelivery*(receiver: RemoteParty,
