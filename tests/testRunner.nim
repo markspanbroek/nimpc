@@ -13,5 +13,6 @@ import "NiMPC/testTriples"
 import "NiMPC/Triples/testTripleCommunication"
 import "NiMPC/Triples/testTripleConversion"
 import "NiMPC/Triples/testTripleMath"
+import "NiMPC/testExample"
 
 {.warning[UnusedImport]:off.}
