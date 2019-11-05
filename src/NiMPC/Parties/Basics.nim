@@ -1,6 +1,5 @@
 import hashes
 import strformat
-import sequtils
 import asyncdispatch
 import Identity
 
@@ -23,22 +22,16 @@ proc destroyParties*(parties: varargs[Party]) =
   for party in parties:
     destroyParty(party)
 
-proc `==`*(a, b: Party): bool =
-  not isNil(b) and a.id == b.id
-
-proc `<`*(a, b: Party): bool =
-  a.id < b.id
-
 method acceptDelivery*(receiver: Party,
                        sender: Party,
                        messsage: string) {.async,base.} =
   assert(false, "base method called, should be overridden")
 
-proc connect*(parties: varargs[Party]) =
-  for party1 in parties:
-    for party2 in parties:
-      if party1 != party2:
-        party1.peers.add(party2)
+proc `==`*(a, b: Party): bool =
+  not isNil(b) and a.id == b.id
+
+proc `<`*(a, b: Party): bool =
+  a.id < b.id
 
 method hash*(party: Party): Hash {.base.} =
   hash(party.id)
@@ -46,5 +39,3 @@ method hash*(party: Party): Hash {.base.} =
 method `$`*(party: Party): string {.base.} =
   fmt"party{party.id}"
 
-proc isFirst*(party: Party): bool =
-  result = party.peers.allIt(party < it)
