@@ -5,7 +5,7 @@ import Basics
 type RemoteParty* = ref object of Party
   socket: AsyncSocket
 
-proc initRemoteParty*: RemoteParty =
+proc newRemoteParty*: RemoteParty =
   new(result)
   init(result)
 

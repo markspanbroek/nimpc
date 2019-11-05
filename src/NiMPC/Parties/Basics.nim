@@ -12,7 +12,7 @@ type
 proc init*(party: Party) =
   party.id = initIdentity()
 
-proc initParty*: Party =
+proc newParty*: Party =
   new(result)
   init(result)
 

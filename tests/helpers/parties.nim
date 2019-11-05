@@ -12,15 +12,15 @@ template computation*(statements) =
   computations.add(asyncproc)
 
 template singleParty*(statements) =
-  let party {.inject.} = initLocalParty()
+  let party {.inject.} = newLocalParty()
   statements
 
 template twoParties*(statements) =
-  let party1 {.inject.}, party2 {.inject.} = initLocalParty()
+  let party1 {.inject.}, party2 {.inject.} = newLocalParty()
   connect(party1, party2)
   run(statements)
 
 template threeParties*(statements) =
-  let party1 {.inject.}, party2 {.inject.}, party3 {.inject.} = initLocalParty()
+  let party1 {.inject.}, party2 {.inject.}, party3 {.inject.} = newLocalParty()
   connect(party1, party2, party3)
   run(statements)

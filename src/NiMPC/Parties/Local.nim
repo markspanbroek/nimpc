@@ -9,7 +9,7 @@ type
   LocalParty* = ref object of Party
     inbox: Inbox
 
-proc initLocalParty*: LocalParty =
+proc newLocalParty*: LocalParty =
   new(result)
   init(result)
 
