@@ -50,11 +50,11 @@ suite "math":
   test "subtracts a constant":
     twoParties:
       computation:
-        let sum = party1.share(42) - 42
-        check (await sum.reveal()) == 0
+        let difference = party1.share(42) - 42
+        check (await difference.reveal()) == 0
       computation:
-        let sum = 42 - party2.obtain(party1)
-        check (await sum.reveal()) == 0
+        let difference = party2.obtain(party1) - 42
+        check (await difference.reveal()) == 0
 
   test "multipies by a constant":
     twoParties:
