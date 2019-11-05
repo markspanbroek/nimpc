@@ -1,28 +1,13 @@
 import hashes
 import strformat
-import strutils
 import sequtils
 import asyncdispatch
-import sysrandom
-import monocypher
+import Identity
 
 type
-  Identity = object
-    secret: Key
-    public: Key
-    identifier: string
-    initialized: bool
   Party* = ref object of RootObj
     peers*: seq[Party]
     identity: Identity
-
-proc `$`(identity: var Identity): string =
-  if not identity.initialized:
-    identity.secret = getRandomBytes(sizeof(Key))
-    identity.public = crypto_sign_public_key(identity.secret)
-    identity.identifier = cast[string](identity.public.toSeq()).toHex()
-    identity.initialized = true
-  return identity.identifier
 
 method acceptDelivery*(receiver: Party,
                        sender: Party,
