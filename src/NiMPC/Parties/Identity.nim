@@ -6,14 +6,17 @@ import monocypher
 
 type
   Identity* = object
-    secret: Key
-    public: Key
+    secretKey*: Key
+    publicKey*: Key
     identifier: string
 
-proc initIdentity*(secret: Key = getRandomBytes(sizeof(Key))): Identity =
-  result.secret = secret
-  result.public = crypto_sign_public_key(result.secret)
-  result.identifier = cast[string](result.public.toSeq()).toHex()
+proc initIdentity*(secretKey: Key = getRandomBytes(sizeof(Key))): Identity =
+  result.secretKey = secretKey
+  result.publicKey = crypto_sign_public_key(result.secretKey)
+  result.identifier = cast[string](result.publicKey.toSeq()).toHex()
+
+proc destroyIdentity*(identity: Identity) =
+  crypto_wipe(identity.secretKey)
 
 proc `$`*(identity: Identity): string =
   return identity.identifier

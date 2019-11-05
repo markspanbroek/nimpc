@@ -16,6 +16,13 @@ proc newParty*: Party =
   new(result)
   init(result)
 
+proc destroyParty*(party: Party) =
+  destroyIdentity(party.id)
+
+proc destroyParties*(parties: varargs[Party]) =
+  for party in parties:
+    destroyParty(party)
+
 proc `==`*(a, b: Party): bool =
   not isNil(b) and a.id == b.id
 
