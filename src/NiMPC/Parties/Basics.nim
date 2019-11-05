@@ -16,6 +16,12 @@ proc initParty*: Party =
   new(result)
   init(result)
 
+proc `==`*(a, b: Party): bool =
+  not isNil(b) and a.id == b.id
+
+proc `<`*(a, b: Party): bool =
+  a.id < b.id
+
 method acceptDelivery*(receiver: Party,
                        sender: Party,
                        messsage: string) {.async,base.} =
@@ -24,7 +30,7 @@ method acceptDelivery*(receiver: Party,
 proc connect*(parties: varargs[Party]) =
   for party1 in parties:
     for party2 in parties:
-      if party1.id != party2.id:
+      if party1 != party2:
         party1.peers.add(party2)
 
 method hash*(party: Party): Hash {.base.} =
@@ -34,4 +40,4 @@ method `$`*(party: Party): string {.base.} =
   fmt"party{party.id}"
 
 proc isFirst*(party: Party): bool =
-  result = party.peers.allIt(party.id < it.id)
+  result = party.peers.allIt(party < it)
