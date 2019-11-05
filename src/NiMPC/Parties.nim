@@ -5,3 +5,4 @@ export Basics.Party
 export Basics.connect
 export Basics.isFirst
 export Local.LocalParty
+export Local.initLocalParty

@@ -1,5 +1,6 @@
 import strutils
 import sequtils
+import hashes
 import sysrandom
 import monocypher
 
@@ -8,12 +9,23 @@ type
     secret: Key
     public: Key
     identifier: string
-    initialized: bool
 
-proc `$`*(identity: var Identity): string =
-  if not identity.initialized:
-    identity.secret = getRandomBytes(sizeof(Key))
-    identity.public = crypto_sign_public_key(identity.secret)
-    identity.identifier = cast[string](identity.public.toSeq()).toHex()
-    identity.initialized = true
+proc initIdentity*(secret: Key = getRandomBytes(sizeof(Key))): Identity =
+  result.secret = secret
+  result.public = crypto_sign_public_key(result.secret)
+  result.identifier = cast[string](result.public.toSeq()).toHex()
+
+proc `$`*(identity: Identity): string =
   return identity.identifier
+
+proc `==`*(a, b: Identity): bool =
+  a.identifier == b.identifier
+
+proc `<`*(a, b: Identity): bool =
+  a.identifier < b.identifier
+
+proc `<=`*(a, b: Identity): bool =
+  a.identifier <= b.identifier
+
+proc `hash`*(identity: Identity): Hash =
+  hash(identity.identifier)

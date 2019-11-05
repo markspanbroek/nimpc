@@ -5,6 +5,10 @@ import Basics
 type RemoteParty* = ref object of Party
   socket: AsyncSocket
 
+proc initRemoteParty*: RemoteParty =
+  new(result)
+  init(result)
+
 method connect*(party: RemoteParty, host: string, port: Port) {.async,base.} =
   assert party.socket == nil
   party.socket = newAsyncSocket()

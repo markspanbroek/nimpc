@@ -12,7 +12,7 @@ suite "remote parties":
   var party: RemoteParty
 
   setup:
-    party = RemoteParty()
+    party = initRemoteParty()
 
   test "forward messages over a socket":
     proc receiving {.async.} =
@@ -21,8 +21,8 @@ suite "remote parties":
     proc sending {.async.} =
       await party.connect(host, port)
       defer: party.disconnect()
-      await party.acceptDelivery(Party(), "one")
-      await party.acceptDelivery(Party(), "two")
+      await party.acceptDelivery(initParty(), "one")
+      await party.acceptDelivery(initParty(), "two")
 
     waitFor all(receiving(), sending())
 
@@ -40,4 +40,4 @@ suite "remote parties":
 
   test "cannot disconnect when not connected":
     expect Exception:
-      RemoteParty().disconnect()
+      initRemoteParty().disconnect()

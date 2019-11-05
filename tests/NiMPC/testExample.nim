@@ -4,7 +4,7 @@ import asyncdispatch
 
 test "example from Readme works":
 
-  let party1, party2 = LocalParty()
+  let party1, party2 = initLocalParty()
   connect(party1, party2)
 
   proc computation1 {.async.} =

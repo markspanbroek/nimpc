@@ -7,15 +7,19 @@ import Identity
 type
   Party* = ref object of RootObj
     peers*: seq[Party]
-    identity: Identity
+    id*: Identity
+
+proc init*(party: Party) =
+  party.id = initIdentity()
+
+proc initParty*: Party =
+  new(result)
+  init(result)
 
 method acceptDelivery*(receiver: Party,
                        sender: Party,
                        messsage: string) {.async,base.} =
   assert(false, "base method called, should be overridden")
-
-method id*(party: Party): string {.base.} =
-  result = $party.identity
 
 proc connect*(parties: varargs[Party]) =
   for party1 in parties:

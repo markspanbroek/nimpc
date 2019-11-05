@@ -9,6 +9,10 @@ type
   LocalParty* = ref object of Party
     inbox: Inbox
 
+proc initLocalParty*: LocalParty =
+  new(result)
+  init(result)
+
 proc messagesFrom(inbox: var Inbox, sender: Party): Messages =
   inbox.mgetOrPut(sender, newFutureStream[string]())
 
