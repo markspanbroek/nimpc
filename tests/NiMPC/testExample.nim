@@ -5,7 +5,6 @@ import asyncdispatch
 test "example from Readme works":
 
   let party1, party2 = newLocalParty()
-  defer: destroyParties(party1, party2)
 
   connect(party1, party2)
 

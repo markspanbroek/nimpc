@@ -2,6 +2,8 @@ import Basics
 import asyncstreams
 import asyncdispatch
 import tables
+import sysrandom
+import monocypher
 export Basics
 
 type
@@ -10,9 +12,11 @@ type
   LocalParty* = ref object of Party
     inbox: Inbox
 
-proc newLocalParty*: LocalParty =
+proc newLocalParty*(secretKey: Key = getRandomBytes(sizeof(Key))): LocalParty =
   new(result)
-  init(result)
+  let publicKey = crypto_sign_public_key(secretKey)
+  let identity = initIdentity(publicKey)
+  init(result, identity)
 
 proc messagesFrom(inbox: var Inbox, sender: Party): Messages =
   inbox.mgetOrPut(sender, newFutureStream[string]())

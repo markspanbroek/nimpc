@@ -45,12 +45,6 @@ implemented a networking layer yet, both parties will run on the same machine.
 let party1, party2 = newLocalParty()
 ```
 
-Calling destroyParties when the parties are no longer in scope ensures that
-their secret keys are securely wiped from memory.
-```nim
-defer: destroyParties(party1, party2)
-```
-
 Connect the parties.
 ```nim
 connect(party1, party2)

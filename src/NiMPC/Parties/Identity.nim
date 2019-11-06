@@ -1,22 +1,16 @@
 import strutils
 import sequtils
 import hashes
-import sysrandom
 import monocypher
 
 type
   Identity* = object
-    secretKey*: Key
     publicKey*: Key
     identifier: string
 
-proc initIdentity*(secretKey: Key = getRandomBytes(sizeof(Key))): Identity =
-  result.secretKey = secretKey
-  result.publicKey = crypto_sign_public_key(result.secretKey)
+proc initIdentity*(publicKey: Key): Identity =
+  result.publicKey = publicKey
   result.identifier = cast[string](result.publicKey.toSeq()).toHex()
-
-proc destroyIdentity*(identity: Identity) =
-  crypto_wipe(identity.secretKey)
 
 proc `$`*(identity: Identity): string =
   return identity.identifier

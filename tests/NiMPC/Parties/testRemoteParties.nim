@@ -2,15 +2,18 @@ import unittest
 import asynctest
 import strutils
 import http
-import json
+import sysrandom
+import monocypher
 import NiMPC/Parties/Local
 import NiMPC/Parties/Remote
+
+let identity: Identity = initIdentity(getRandomBytes(sizeof(Key)))
 
 suite "remote parties":
 
   test "cannot disconnect when not connected":
     expect Exception:
-      newRemoteParty().disconnect()
+      newRemoteParty(identity).disconnect()
 
 suite "connected remote parties":
 
@@ -22,7 +25,7 @@ suite "connected remote parties":
   var received: Future[string]
 
   asyncsetup:
-    party = newRemoteParty()
+    party = newRemoteParty(identity)
     sender = newLocalParty()
     received = receive(host, port)
     await party.connect(host, port)
@@ -54,12 +57,3 @@ suite "connected remote parties":
     party.disconnect()
 
     check (await received).contains($party.id)
-
-  asynctest "envelope should not contain private keys":
-    await party.acceptDelivery(sender, "some message")
-    party.disconnect()
-
-    check not (await received).contains($ sender.id.secretKey)
-    check not (await received).contains($ %* sender.id.secretKey)
-    check not (await received).contains($ party.id.secretKey)
-    check not (await received).contains($ %* party.id.secretKey)

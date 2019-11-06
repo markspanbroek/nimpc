@@ -7,29 +7,24 @@ import NiMPC/Parties/Identity
 
 suite "Identity":
 
-  test "identities are unique":
-    check initIdentity() != initIdentity()
+  proc randomKey: Key =
+    getRandomBytes(sizeof(Key))
 
-  test "identities can be created from a secret key":
-    let secret: Key = getRandomBytes(sizeof(Key))
-    check initIdentity(secret) == initIdentity(secret)
+  test "identities can be created from a public key":
+    let key1, key2 = randomKey()
+    check initIdentity(key1) == initIdentity(key1)
+    check initIdentity(key1) != initIdentity(key2)
 
   test "identities can be compared using <, and <=":
-    var identities = newSeqWith(10, initIdentity())
+    var identities = newSeqWith(10, initIdentity(randomKey()))
     sort(identities)
     check identities.allIt(it <= identities[len(identities)-1])
 
   test "identities are hashable":
-    check hash(initIdentity()) != hash(initIdentity())
+    let key1, key2 = randomKey()
+    check hash(initIdentity(key1)) == hash(initIdentity(key1))
+    check hash(initIdentity(key1)) != hash(initIdentity(key2))
 
-  test "identities have secret keys":
-    check initIdentity().secretKey != initIdentity().secretKey
-
-  test "identities have public keys":
-    check initIdentity().publicKey != initIdentity().publicKey
-
-  test "after destroying an identity, its secret key is wiped":
-    let identity = initIdentity()
-    destroyIdentity(identity)
-    var empty: Key
-    check identity.secretKey == empty
+  test "identities expose their public keys":
+    let key = randomKey()
+    check initIdentity(key).publicKey == key

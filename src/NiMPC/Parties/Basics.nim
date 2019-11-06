@@ -9,15 +9,8 @@ type
     peers*: seq[Party]
     id*: Identity
 
-proc init*(party: Party) =
-  party.id = initIdentity()
-
-proc destroyParty*(party: Party) =
-  destroyIdentity(party.id)
-
-proc destroyParties*[T: Party](parties: varargs[T]) =
-  for party in parties:
-    destroyParty(party)
+proc init*(party: Party, id: Identity) =
+  party.id = id
 
 method acceptDelivery*(receiver: Party,
                        sender: Party,

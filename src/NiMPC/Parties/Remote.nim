@@ -1,14 +1,15 @@
 import asyncdispatch
 import asyncnet
+import strutils
 import json
 import Basics
 
 type RemoteParty* = ref object of Party
   socket: AsyncSocket
 
-proc newRemoteParty*: RemoteParty =
+proc newRemoteParty*(identity: Identity): RemoteParty =
   new(result)
-  init(result)
+  init(result, identity)
 
 method connect*(party: RemoteParty, host: string, port: Port) {.async,base.} =
   assert party.socket == nil
