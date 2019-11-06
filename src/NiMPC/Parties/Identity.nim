@@ -4,25 +4,26 @@ import hashes
 import monocypher
 
 type
-  Identity* = object
-    publicKey*: Key
-    identifier: string
+  Identity* = distinct Key
 
 proc initIdentity*(publicKey: Key): Identity =
-  result.publicKey = publicKey
-  result.identifier = cast[string](result.publicKey.toSeq()).toHex()
+  Identity(publicKey)
+
+proc publicKey*(identity: Identity): Key =
+  Key(identity)
 
 proc `$`*(identity: Identity): string =
-  return identity.identifier
+  let publicKey = identity.publicKey
+  cast[string](publicKey.toSeq()).toHex()
 
 proc `==`*(a, b: Identity): bool =
-  a.identifier == b.identifier
+  $a == $b
 
 proc `<`*(a, b: Identity): bool =
-  a.identifier < b.identifier
+  $a < $b
 
 proc `<=`*(a, b: Identity): bool =
-  a.identifier <= b.identifier
+  $a <= $b
 
 proc `hash`*(identity: Identity): Hash =
-  hash(identity.identifier)
+  hash($identity)
