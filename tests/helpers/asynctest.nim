@@ -7,6 +7,11 @@ template asynctest*(name, body) =
     waitFor asyncproc()
 
 template asyncsetup*(body) =
-  setUp:
+  setup:
+    let asyncproc = proc {.async.} = body
+    waitFor asyncproc()
+
+template asyncteardown*(body) =
+  teardown:
     let asyncproc = proc {.async.} = body
     waitFor asyncproc()
