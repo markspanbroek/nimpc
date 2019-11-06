@@ -15,7 +15,7 @@ proc init*(party: Party) =
 proc destroyParty*(party: Party) =
   destroyIdentity(party.id)
 
-proc destroyParties*(parties: varargs[Party]) =
+proc destroyParties*[T: Party](parties: varargs[T]) =
   for party in parties:
     destroyParty(party)
 
