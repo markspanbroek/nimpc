@@ -2,6 +2,7 @@ import hashes
 import strformat
 import asyncdispatch
 import Identity
+export Identity
 
 type
   Party* = ref object of RootObj
@@ -38,4 +39,3 @@ method hash*(party: Party): Hash {.base.} =
 
 method `$`*(party: Party): string {.base.} =
   fmt"party{party.id}"
-

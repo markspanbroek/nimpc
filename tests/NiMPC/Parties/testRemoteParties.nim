@@ -1,5 +1,6 @@
 import unittest
 import asynctest
+import strutils
 import http
 import NiMPC/Parties/Basics
 import NiMPC/Parties/Remote
@@ -16,7 +17,9 @@ suite "remote parties":
 
   test "forward messages over a socket":
     proc receiving {.async.} =
-      check (await receive(host, port)) == "onetwo"
+      let received = await receive(host, port)
+      check received.contains("one")
+      check received.contains("two")
 
     proc sending {.async.} =
       await party.connect(host, port)
@@ -41,3 +44,17 @@ suite "remote parties":
   test "cannot disconnect when not connected":
     expect Exception:
       newRemoteParty().disconnect()
+
+  test "envelope contains sender":
+    let sender = newParty()
+
+    proc receiving {.async.} =
+      let received = await receive(host, port)
+      check received.contains($sender.id)
+
+    proc sending {.async.} =
+      await party.connect(host, port)
+      defer: party.disconnect()
+      await party.acceptDelivery(sender, "some message")
+
+    waitFor all(receiving(), sending())

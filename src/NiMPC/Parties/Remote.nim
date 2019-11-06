@@ -1,5 +1,6 @@
 import asyncdispatch
 import asyncnet
+import json
 import Basics
 
 type RemoteParty* = ref object of Party
@@ -21,4 +22,5 @@ method disconnect*(party: RemoteParty) {.base.} =
 method acceptDelivery*(receiver: RemoteParty,
                        sender: Party,
                        message: string) {.async.} =
-  await receiver.socket.send(message)
+  let envelope = %*{"message": message, "sender": $sender.id}
+  await receiver.socket.send($envelope)
