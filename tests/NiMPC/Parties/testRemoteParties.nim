@@ -47,3 +47,9 @@ suite "connected remote parties":
     party.disconnect()
 
     check (await received).contains($sender.id)
+
+  asynctest "envelope contains receiver":
+    await party.acceptDelivery(sender, "some message")
+    party.disconnect()
+
+    check (await received).contains($party.id)

@@ -22,5 +22,9 @@ method disconnect*(party: RemoteParty) {.base.} =
 method acceptDelivery*(receiver: RemoteParty,
                        sender: Party,
                        message: string) {.async.} =
-  let envelope = %*{"message": message, "sender": $sender.id}
+  let envelope = %*{
+    "message": message,
+    "sender": $sender.id,
+    "receiver": $receiver.id
+  }
   await receiver.socket.send($envelope)
