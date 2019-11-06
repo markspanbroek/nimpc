@@ -7,54 +7,43 @@ import NiMPC/Parties/Remote
 
 suite "remote parties":
 
+  test "cannot disconnect when not connected":
+    expect Exception:
+      newRemoteParty().disconnect()
+
+suite "connected remote parties":
+
   let host = "localhost"
   let port = Port(34590)
 
   var party: RemoteParty
   var sender: Party
+  var received: Future[string]
 
-  setup:
+  asyncsetup:
     party = newRemoteParty()
     sender = newParty()
+    received = receive(host, port)
+    await party.connect(host, port)
 
-  test "forward messages over a socket":
-    proc receiving {.async.} =
-      let received = await receive(host, port)
-      check received.contains("one")
-      check received.contains("two")
+  asyncteardown:
+    discard await received
 
-    proc sending {.async.} =
-      await party.connect(host, port)
-      defer: party.disconnect()
-      await party.acceptDelivery(sender, "one")
-      await party.acceptDelivery(sender, "two")
+  asynctest "forward messages over a socket":
+    await party.acceptDelivery(sender, "one")
+    await party.acceptDelivery(sender, "two")
+    party.disconnect()
 
-    waitFor all(receiving(), sending())
+    check (await received).contains("one")
+    check (await received).contains("two")
 
-  test "cannot connect twice":
-    proc receiving {.async.} =
-      discard await receive(host, port)
-
-    proc sending {.async.} =
-      await party.connect(host, port)
-      defer: party.disconnect()
-      expect Exception:
-        await party.connect(host, port)
-
-    waitFor all(receiving(), sending())
-
-  test "cannot disconnect when not connected":
+  asynctest "cannot connect twice":
+    defer: party.disconnect()
     expect Exception:
-      newRemoteParty().disconnect()
-
-  test "envelope contains sender":
-    proc receiving {.async.} =
-      let received = await receive(host, port)
-      check received.contains($sender.id)
-
-    proc sending {.async.} =
       await party.connect(host, port)
-      defer: party.disconnect()
-      await party.acceptDelivery(sender, "some message")
 
-    waitFor all(receiving(), sending())
+  asynctest "envelope contains sender":
+    await party.acceptDelivery(sender, "some message")
+    party.disconnect()
+
+    check (await received).contains($sender.id)
