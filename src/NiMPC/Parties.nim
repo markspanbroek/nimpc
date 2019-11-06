@@ -7,3 +7,4 @@ export Connections.connect
 export Connections.isFirst
 export Local.LocalParty
 export Local.newLocalParty
+export Local.destroy

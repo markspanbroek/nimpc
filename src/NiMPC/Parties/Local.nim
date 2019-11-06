@@ -11,12 +11,24 @@ type
   Inbox = Table[Party, Messages]
   LocalParty* = ref object of Party
     inbox: Inbox
+    secretKey*: Key
+
+proc init*(party: var LocalParty, secretKey: Key) =
+  party.secretKey = secretKey
+  let publicKey = crypto_sign_public_key(secretKey)
+  let identity = initIdentity(publicKey)
+  Party(party).init(identity)
+
+proc destroy*(party: LocalParty) =
+  crypto_wipe(party.secretKey)
+
+proc destroy*(parties: varargs[LocalParty]) =
+  for party in parties:
+    destroy(party)
 
 proc newLocalParty*(secretKey: Key = getRandomBytes(sizeof(Key))): LocalParty =
   new(result)
-  let publicKey = crypto_sign_public_key(secretKey)
-  let identity = initIdentity(publicKey)
-  init(result, identity)
+  init(result, secretKey)
 
 proc messagesFrom(inbox: var Inbox, sender: Party): Messages =
   inbox.mgetOrPut(sender, newFutureStream[string]())
