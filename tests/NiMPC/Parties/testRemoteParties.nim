@@ -3,7 +3,7 @@ import asynctest
 import strutils
 import http
 import json
-import NiMPC/Parties/Basics
+import NiMPC/Parties/Local
 import NiMPC/Parties/Remote
 
 suite "remote parties":
@@ -23,7 +23,7 @@ suite "connected remote parties":
 
   asyncsetup:
     party = newRemoteParty()
-    sender = newParty()
+    sender = newLocalParty()
     received = receive(host, port)
     await party.connect(host, port)
 

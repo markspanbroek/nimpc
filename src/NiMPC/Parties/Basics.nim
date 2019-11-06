@@ -12,10 +12,6 @@ type
 proc init*(party: Party) =
   party.id = initIdentity()
 
-proc newParty*: Party =
-  new(result)
-  init(result)
-
 proc destroyParty*(party: Party) =
   destroyIdentity(party.id)
 

@@ -2,6 +2,7 @@ import Basics
 import asyncstreams
 import asyncdispatch
 import tables
+export Basics
 
 type
   Messages = FutureStream[string]
