@@ -2,6 +2,7 @@ import unittest
 import asynctest
 import strutils
 import http
+import json
 import NiMPC/Parties/Basics
 import NiMPC/Parties/Remote
 
@@ -53,3 +54,12 @@ suite "connected remote parties":
     party.disconnect()
 
     check (await received).contains($party.id)
+
+  asynctest "envelope should not contain private keys":
+    await party.acceptDelivery(sender, "some message")
+    party.disconnect()
+
+    check not (await received).contains($ sender.id.secretKey)
+    check not (await received).contains($ %* sender.id.secretKey)
+    check not (await received).contains($ party.id.secretKey)
+    check not (await received).contains($ %* party.id.secretKey)
