@@ -11,9 +11,11 @@ suite "remote parties":
   let port = Port(34590)
 
   var party: RemoteParty
+  var sender: Party
 
   setup:
     party = newRemoteParty()
+    sender = newParty()
 
   test "forward messages over a socket":
     proc receiving {.async.} =
@@ -24,8 +26,8 @@ suite "remote parties":
     proc sending {.async.} =
       await party.connect(host, port)
       defer: party.disconnect()
-      await party.acceptDelivery(newParty(), "one")
-      await party.acceptDelivery(newParty(), "two")
+      await party.acceptDelivery(sender, "one")
+      await party.acceptDelivery(sender, "two")
 
     waitFor all(receiving(), sending())
 
@@ -46,8 +48,6 @@ suite "remote parties":
       newRemoteParty().disconnect()
 
   test "envelope contains sender":
-    let sender = newParty()
-
     proc receiving {.async.} =
       let received = await receive(host, port)
       check received.contains($sender.id)
