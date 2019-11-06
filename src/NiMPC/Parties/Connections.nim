@@ -1,6 +1,5 @@
 import Basics
 import sequtils
-import asyncdispatch
 
 proc connect*(parties: varargs[Party]) =
   for party1 in parties:
