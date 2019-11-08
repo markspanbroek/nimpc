@@ -20,3 +20,7 @@ proc receive*[T](recipient: LocalParty, sender: Party): Future[T] {.async.} =
 proc receiveUint64*(recipient: LocalParty,
                     sender: Party): Future[uint64] {.async.} =
   result = await receive[uint64](recipient, sender)
+
+proc receiveString*(recipient: LocalParty,
+                    sender: Party): Future[string] {.async.} =
+  result = await receive[string](recipient, sender)

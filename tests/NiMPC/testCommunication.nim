@@ -14,6 +14,11 @@ suite "communication":
       await party1.send(party2, 42)
       check (await party2.receiveUint64(party1)) == 42
 
+  asynctest "can receive strings from other party":
+    twoParties:
+      await party1.send(party2, "foo")
+      check (await party2.receiveString(party1)) == "foo"
+
   asynctest "value is received by recipient only":
     twoParties:
       await party1.send(party2, 42)
