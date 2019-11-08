@@ -28,4 +28,4 @@ method acceptDelivery*(receiver: RemoteParty,
     "sender": $sender.id,
     "receiver": $receiver.id
   }
-  await receiver.socket.send($envelope)
+  await receiver.socket.send($envelope & "\n")

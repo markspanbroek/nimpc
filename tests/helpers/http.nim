@@ -12,7 +12,7 @@ proc acceptConnection(host: string, port: Port): Future[AsyncSocket] {.async.} =
 proc receive*(host: string, port: Port): Future[string] {.async.} =
   let connection = await acceptConnection(host, port)
   defer: connection.close()
-  var chunk = await connection.recv(4096)
+  var chunk = await connection.recvLine()
   while chunk != "":
     result &= chunk
-    chunk = await connection.recv(4096)
+    chunk = await connection.recvLine()
