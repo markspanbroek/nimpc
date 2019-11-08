@@ -4,10 +4,10 @@ import NiMPC/Parties/Local
 
 suite "local parties":
 
-  test "can create a party":
+  test "can be created":
     check newLocalParty() != nil
 
-  test "it wipes the secret key when destroyed":
+  test "wipe their secret key when destroyed":
     var secretKeyPtr: ptr Key
     block:
       let party = newLocalParty()
