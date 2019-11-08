@@ -15,4 +15,4 @@ proc receive*(host: string, port: Port): Future[string] {.async.} =
   var chunk = await connection.recv(4096)
   while chunk != "":
     result &= chunk
-    chunk = await connection.recvLine()
+    chunk = await connection.recv(4096)
