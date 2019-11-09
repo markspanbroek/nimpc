@@ -1,6 +1,8 @@
 import Basics
 import asyncstreams
 import asyncdispatch
+import asyncnet
+import json
 import tables
 import sysrandom
 import monocypher
@@ -44,3 +46,15 @@ proc receiveMessage*(recipient: LocalParty,
   let messages = recipient.inbox.messagesFrom(sender)
   let (_, received) = await messages.read()
   result = received
+
+proc listen*(party: LocalParty, host: string, port: Port) {.async.} =
+  let socket = newAsyncSocket()
+  defer: socket.close()
+  socket.setSockOpt(OptReuseAddr, true)
+  socket.bindAddr(port, host)
+  socket.listen()
+  let connection = await socket.accept()
+  defer: connection.close()
+  let envelope = await connection.recvLine()
+  let message = parseJson(envelope)["message"].getStr()
+  await party.acceptDelivery(party.peers[0], message)
