@@ -47,14 +47,19 @@ proc receiveMessage*(recipient: LocalParty,
   let (_, received) = await messages.read()
   result = received
 
-proc listen*(party: LocalParty, host: string, port: Port) {.async.} =
+proc listen(host: string, port: Port): Future[AsyncSocket] {.async.} =
   let socket = newAsyncSocket()
   defer: socket.close()
   socket.setSockOpt(OptReuseAddr, true)
   socket.bindAddr(port, host)
   socket.listen()
-  let connection = await socket.accept()
+  result = await socket.accept()
+
+proc listen*(party: LocalParty, host: string, port: Port) {.async.} =
+  let connection = await listen(host, port)
   defer: connection.close()
-  let envelope = await connection.recvLine()
-  let message = parseJson(envelope)["message"].getStr()
-  await party.acceptDelivery(party.peers[0], message)
+  while not connection.isClosed:
+    let envelope = await connection.recvLine()
+    if envelope != "":
+      let message = parseJson(envelope)["message"].getStr()
+      await party.acceptDelivery(party.peers[0], message)
