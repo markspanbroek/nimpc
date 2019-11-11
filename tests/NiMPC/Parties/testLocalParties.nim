@@ -21,35 +21,29 @@ suite "local parties":
     var empty: Key
     check secretKeyPtr[] == empty
 
-  asynctest "receives an incoming message on a socket":
-    let party1, party2 = newLocalParty()
+suite "local parties listen for messages on a socket":
 
-    let proxy1 = newRemoteParty(party1.id)
-    let proxy2 = newRemoteParty(party2.id)
+  var party1, party2: LocalParty
+  var proxy1, proxy2: RemoteParty
 
+  asyncsetup:
+    party1 = newLocalParty()
+    party2 = newLocalParty()
+    proxy1 = newRemoteParty(party1.id)
+    proxy2 = newRemoteParty(party2.id)
     connect(party1, proxy2)
     connect(party2, proxy1)
-
     asyncCheck party1.listen("localhost", Port(23455))
     await proxy1.connect("localhost", Port(23455))
-    defer: proxy1.disconnect()
 
+  teardown:
+    proxy1.disconnect()
+
+  asynctest "receives a message":
     await party2.send(proxy1, "hello")
     check (await party1.receiveString(proxy2)) == "hello"
 
   asynctest "receives multiple messages":
-    let party1, party2 = newLocalParty()
-
-    let proxy1 = newRemoteParty(party1.id)
-    let proxy2 = newRemoteParty(party2.id)
-
-    connect(party1, proxy2)
-    connect(party2, proxy1)
-
-    asyncCheck party1.listen("localhost", Port(23455))
-    await proxy1.connect("localhost", Port(23455))
-    defer: proxy1.disconnect()
-
     await party2.send(proxy1, "hello")
     await party2.send(proxy1, "again")
     check (await party1.receiveString(proxy2)) == "hello"
