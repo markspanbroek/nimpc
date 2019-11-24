@@ -1,4 +1,5 @@
 import unittest
+import random
 import asynctest
 import strutils
 import asyncdispatch
@@ -33,8 +34,9 @@ suite "local parties listen for messages on a socket":
     proxy2 = newRemoteParty(party2.id)
     connect(party1, proxy2)
     connect(party2, proxy1)
-    asyncCheck party1.listen("localhost", Port(23455))
-    await proxy1.connect("localhost", Port(23455))
+    let port = Port(rand(23000..27000))
+    asyncCheck party1.listen("localhost", port)
+    await proxy1.connect("localhost", port)
 
   teardown:
     proxy1.disconnect()
