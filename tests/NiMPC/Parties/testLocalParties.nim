@@ -50,3 +50,14 @@ suite "local parties listen for messages on a socket":
     await party2.send(proxy1, "again")
     check (await party1.receiveString(proxy2)) == "hello"
     check (await party1.receiveString(proxy2)) == "again"
+
+  asynctest "receives from multiple parties":
+    let party3 = newLocalParty()
+    let proxy3 = newRemoteParty(party3.id)
+
+    connect(party1, proxy3)
+
+    await party2.send(proxy1, "hello from party 2")
+    await party3.send(proxy1, "hello from party 3")
+    check (await party1.receiveString(proxy2)) == "hello from party 2"
+    check (await party1.receiveString(proxy3)) == "hello from party 3"

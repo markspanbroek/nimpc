@@ -4,6 +4,7 @@ import asyncdispatch
 import asyncnet
 import json
 import tables
+import sequtils
 import sysrandom
 import monocypher
 export Basics
@@ -47,19 +48,23 @@ proc receiveMessage*(recipient: LocalParty,
   let (_, received) = await messages.read()
   result = received
 
-proc listen(host: string, port: Port): Future[AsyncSocket] {.async.} =
+proc handleConnection(party: LocalParty, connection: AsyncSocket) {.async.} =
+  defer: connection.close()
+  while not connection.isClosed:
+    let envelope = await connection.recvLine()
+    if envelope != "":
+      let parsed = parseJson(envelope)
+      let message = parsed["message"].getStr()
+      let senderId = parsed["sender"].getStr()
+      let sender = party.peers.filterIt($it.id == senderId)[0]
+      await party.acceptDelivery(sender, message)
+
+proc listen*(party: LocalParty, host: string, port: Port) {.async.} =
   let socket = newAsyncSocket()
   defer: socket.close()
   socket.setSockOpt(OptReuseAddr, true)
   socket.bindAddr(port, host)
   socket.listen()
-  result = await socket.accept()
-
-proc listen*(party: LocalParty, host: string, port: Port) {.async.} =
-  let connection = await listen(host, port)
-  defer: connection.close()
-  while not connection.isClosed:
-    let envelope = await connection.recvLine()
-    if envelope != "":
-      let message = parseJson(envelope)["message"].getStr()
-      await party.acceptDelivery(party.peers[0], message)
+  while true:
+    let connection = await socket.accept()
+    asyncCheck party.handleConnection(connection)
