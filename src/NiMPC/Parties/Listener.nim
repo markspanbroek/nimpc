@@ -20,16 +20,19 @@ proc closeSafely(socket: AsyncSocket) =
   if not socket.isClosed:
     socket.close()
 
+proc acceptEnvelope(party: LocalParty, envelope: string) {.async.} =
+  let parsed = parseJson(envelope)
+  let message = parsed["message"].getStr()
+  let senderId = parsed["sender"].getStr()
+  let sender = party.peers.filterIt($it.id == senderId)[0]
+  await party.acceptDelivery(sender, message)
+
 proc handleConnection(party: LocalParty, connection: AsyncSocket) {.async.} =
   defer: connection.close()
   while not connection.isClosed:
     let envelope = await connection.recvLine()
     if envelope != "":
-      let parsed = parseJson(envelope)
-      let message = parsed["message"].getStr()
-      let senderId = parsed["sender"].getStr()
-      let sender = party.peers.filterIt($it.id == senderId)[0]
-      await party.acceptDelivery(sender, message)
+      await party.acceptEnvelope(envelope)
 
 proc newListener(socket: AsyncSocket, future: Future[void]): Listener =
   new(result)
