@@ -2,6 +2,7 @@ import unittest
 import asynctest
 import asyncdispatch
 import NiMPC/Parties/Local
+import NiMPC/Parties/Listener
 import NiMPC/Parties/Remote
 import NiMPC/Communication
 
