@@ -42,6 +42,7 @@ suite "local parties listen for messages on a socket":
 
   teardown:
     proxy1.disconnect()
+    listener.stop()
 
   asynctest "receives a message":
     await party2.send(proxy1, "hello")
