@@ -2,6 +2,7 @@ import asyncdispatch
 import asyncnet
 import json
 import sequtils
+import Identity
 import Local
 import Sockets
 
@@ -13,10 +14,10 @@ type
 proc acceptEnvelope(party: LocalParty, envelope: string) {.async.} =
   let parsed = parseJson(envelope)
   let message = parsed["message"].getStr()
-  let senderId = parsed["sender"].getStr()
-  let receiverId = parsed["receiver"].getStr()
-  let possibleSenders = party.peers.filterIt($it.id == senderId)
-  if receiverId == $party.id and possibleSenders.len > 0:
+  let senderId = parseIdentity(parsed["sender"].getStr())
+  let receiverId = parseIdentity(parsed["receiver"].getStr())
+  let possibleSenders = party.peers.filterIt(it.id == senderId)
+  if receiverId == party.id and possibleSenders.len > 0:
     let sender = possibleSenders[0]
     await party.acceptDelivery(sender, message)
 
