@@ -10,16 +10,23 @@ type
   Listener* = ref object
     socket: AsyncSocket
     future: Future[void]
+  Envelope = object
+    senderId: Identity
+    receiverId: Identity
+    message: string
+
+proc parseEnvelope(s: string): Envelope =
+  let json = parseJson(s)
+  result.message = json["message"].getStr()
+  result.senderId = parseIdentity(json["sender"].getStr())
+  result.receiverId = parseIdentity(json["receiver"].getStr())
 
 proc acceptEnvelope(party: LocalParty, envelope: string) {.async.} =
-  let parsed = parseJson(envelope)
-  let message = parsed["message"].getStr()
-  let senderId = parseIdentity(parsed["sender"].getStr())
-  let receiverId = parseIdentity(parsed["receiver"].getStr())
-  let possibleSenders = party.peers.filterIt(it.id == senderId)
-  if receiverId == party.id and possibleSenders.len > 0:
+  let parsed = parseEnvelope(envelope)
+  let possibleSenders = party.peers.filterIt(it.id == parsed.senderId)
+  if parsed.receiverId == party.id and possibleSenders.len > 0:
     let sender = possibleSenders[0]
-    await party.acceptDelivery(sender, message)
+    await party.acceptDelivery(sender, parsed.message)
 
 proc handleConnection(party: LocalParty, connection: AsyncSocket) {.async.} =
   defer: connection.close()
