@@ -26,6 +26,8 @@ suite "local parties listen for messages on a socket":
 
   var party1, party2: LocalParty
   var proxy1, proxy2: RemoteParty
+  var listener: Listener
+  var port: Port
 
   asyncsetup:
     party1 = newLocalParty()
@@ -34,8 +36,8 @@ suite "local parties listen for messages on a socket":
     proxy2 = newRemoteParty(party2.id)
     connect(party1, proxy2)
     connect(party2, proxy1)
-    let port = Port(rand(23000..27000))
-    asyncCheck party1.listen("localhost", port)
+    port = Port(rand(23000..27000))
+    listener = party1.listen("localhost", port)
     await proxy1.connect("localhost", port)
 
   teardown:
@@ -61,3 +63,8 @@ suite "local parties listen for messages on a socket":
     await party3.send(proxy1, "hello from party 3")
     check (await party1.receiveString(proxy2)) == "hello from party 2"
     check (await party1.receiveString(proxy3)) == "hello from party 3"
+
+  asynctest "stops listening for incoming connections":
+    await listener.stop()
+    expect Exception:
+      await newRemoteParty(party1.id).connect("localhost", port)
