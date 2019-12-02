@@ -1,5 +1,4 @@
 import unittest
-import random
 import asynctest
 import strutils
 import asyncdispatch
@@ -24,10 +23,12 @@ suite "local parties":
 
 suite "local parties listen for messages on a socket":
 
+  const host = "localhost"
+  const port = Port(23455)
+
   var party1, party2: LocalParty
   var proxy1, proxy2: RemoteParty
   var listener: Listener
-  var port: Port
 
   asyncsetup:
     party1 = newLocalParty()
@@ -36,9 +37,8 @@ suite "local parties listen for messages on a socket":
     proxy2 = newRemoteParty(party2.id)
     connect(party1, proxy2)
     connect(party2, proxy1)
-    port = Port(rand(23000..27000))
-    listener = party1.listen("localhost", port)
-    await proxy1.connect("localhost", port)
+    listener = party1.listen(host, port)
+    await proxy1.connect(host, port)
 
   teardown:
     proxy1.disconnect()
@@ -68,4 +68,4 @@ suite "local parties listen for messages on a socket":
   asynctest "stops listening for incoming connections":
     listener.stop()
     expect Exception:
-      await newRemoteParty(party1.id).connect("localhost", port)
+      await newRemoteParty(party1.id).connect(host, port)
