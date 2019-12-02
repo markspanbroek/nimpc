@@ -30,9 +30,3 @@ suite "communication":
       await party1.send(party1, 42)
       expect Exception:
         discard waitFor party1.receiveUint64(party2)
-
-  asynctest "can broadcast to other parties":
-    threeParties:
-      await party3.broadcast(42)
-      check (await party1.receiveUint64(party3)) == 42
-      check (await party2.receiveUint64(party3)) == 42
