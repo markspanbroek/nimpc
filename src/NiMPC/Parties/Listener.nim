@@ -23,9 +23,12 @@ proc parseEnvelope(s: string): Envelope =
 
 proc acceptEnvelope(party: LocalParty, envelope: string) {.async.} =
   let parsed = parseEnvelope(envelope)
-  let possibleSenders = party.peers.filterIt(it.id == parsed.senderId)
-  if parsed.receiverId == party.id and possibleSenders.len > 0:
-    let sender = possibleSenders[0]
+  var sender: Party
+  try:
+    sender = party.peers[parsed.senderId]
+  except IndexError:
+    return
+  if parsed.receiverId == party.id:
     await party.acceptDelivery(sender, parsed.message)
 
 proc handleConnection(party: LocalParty, connection: AsyncSocket) {.async.} =
