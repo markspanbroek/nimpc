@@ -3,22 +3,12 @@ import asyncnet
 import json
 import sequtils
 import Local
+import Sockets
 
 type
   Listener* = ref object
     socket: AsyncSocket
     future: Future[void]
-
-proc acceptOrClosed(socket: AsyncSocket): Future[AsyncSocket] {.async.} =
-  try:
-    result = await socket.accept()
-  except OSError as error:
-    if not socket.isClosed:
-      raise error
-
-proc closeSafely(socket: AsyncSocket) =
-  if not socket.isClosed:
-    socket.close()
 
 proc acceptEnvelope(party: LocalParty, envelope: string) {.async.} =
   let parsed = parseJson(envelope)
