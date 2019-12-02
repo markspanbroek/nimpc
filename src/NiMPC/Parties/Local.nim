@@ -88,5 +88,5 @@ proc listen*(party: LocalParty, host: string, port: Port): Listener =
         asyncCheck party.handleConnection(connection)
   asyncCheck doit()
 
-proc stop*(listener: Listener) {.async.} =
+proc stop*(listener: Listener) =
   listener.socket.close()

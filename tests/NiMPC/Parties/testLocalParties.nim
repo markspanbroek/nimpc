@@ -65,6 +65,6 @@ suite "local parties listen for messages on a socket":
     check (await party1.receiveString(proxy3)) == "hello from party 3"
 
   asynctest "stops listening for incoming connections":
-    await listener.stop()
+    listener.stop()
     expect Exception:
       await newRemoteParty(party1.id).connect("localhost", port)
