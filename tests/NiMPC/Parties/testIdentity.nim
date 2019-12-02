@@ -28,3 +28,17 @@ suite "Identity":
   test "identities expose their public keys":
     let key = randomKey()
     check initIdentity(key).publicKey == key
+
+  test "identities can be converted to/from a string":
+    let identity = initIdentity(randomKey())
+    check parseIdentity($identity) == identity
+
+  test "parsing an identity of wrong lenght raises a value error":
+    expect ValueError:
+      discard parseIdentity("DEADBEEF")
+
+  test "parsing an identity string that is not hex raises a value error":
+    var wrong = $initIdentity(randomKey())
+    wrong[^1] = '!'
+    expect ValueError:
+      discard parseIdentity(wrong)
