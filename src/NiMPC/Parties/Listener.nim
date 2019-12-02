@@ -30,21 +30,24 @@ proc handleConnection(party: LocalParty, connection: AsyncSocket) {.async.} =
       let sender = party.peers.filterIt($it.id == senderId)[0]
       await party.acceptDelivery(sender, message)
 
-proc listen*(party: LocalParty, host: string, port: Port): Listener =
+proc newListener(socket: AsyncSocket): Listener =
   new(result)
-  let listener = result
-  proc doit {.async.} =
-    let socket = newAsyncSocket()
-    defer: socket.closeSafely()
-    socket.setSockOpt(OptReuseAddr, true)
-    socket.bindAddr(port, host)
-    socket.listen()
-    listener.socket = socket
-    while not socket.isClosed:
-      let connection = await socket.acceptOrClosed()
-      if not socket.isClosed:
-        asyncCheck party.handleConnection(connection)
-  asyncCheck doit()
+  result.socket = socket
+
+proc listen(party: LocalParty, socket: AsyncSocket) {.async.} =
+  defer: socket.closeSafely()
+  while not socket.isClosed:
+    let connection = await socket.acceptOrClosed()
+    if not socket.isClosed:
+      asyncCheck party.handleConnection(connection)
+
+proc listen*(party: LocalParty, host: string, port: Port): Listener =
+  let socket = newAsyncSocket()
+  socket.setSockOpt(OptReuseAddr, true)
+  socket.bindAddr(port, host)
+  socket.listen()
+  asyncCheck party.listen(socket)
+  result = newListener(socket)
 
 proc stop*(listener: Listener) =
   listener.socket.close()
