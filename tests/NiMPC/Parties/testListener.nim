@@ -26,9 +26,9 @@ suite "local parties listen for messages on a socket":
     listener = party1.listen(host, port)
     await proxy1.connect(host, port)
 
-  teardown:
+  asyncteardown:
     proxy1.disconnect()
-    listener.stop()
+    await listener.stop()
 
   asynctest "receives a message":
     await party2.send(proxy1, "hello")
@@ -52,6 +52,6 @@ suite "local parties listen for messages on a socket":
     check (await party1.receiveString(proxy3)) == "hello from party 3"
 
   asynctest "stops listening for incoming connections":
-    listener.stop()
+    await listener.stop()
     expect Exception:
       await newRemoteParty(party1.id).connect(host, port)
