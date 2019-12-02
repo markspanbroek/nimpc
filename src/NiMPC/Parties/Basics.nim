@@ -28,3 +28,9 @@ method hash*(party: Party): Hash {.base.} =
 
 method `$`*(party: Party): string {.base.} =
   fmt"party{party.id}"
+
+proc `[]`*(parties: seq[Party], id: Identity): Party =
+  for party in parties:
+    if party.id == id:
+      return party
+  raise newException(IndexError, fmt"no party with id {id} found")
