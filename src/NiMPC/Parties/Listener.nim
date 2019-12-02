@@ -14,8 +14,11 @@ proc acceptEnvelope(party: LocalParty, envelope: string) {.async.} =
   let parsed = parseJson(envelope)
   let message = parsed["message"].getStr()
   let senderId = parsed["sender"].getStr()
-  let sender = party.peers.filterIt($it.id == senderId)[0]
-  await party.acceptDelivery(sender, message)
+  let receiverId = parsed["receiver"].getStr()
+  let possibleSenders = party.peers.filterIt($it.id == senderId)
+  if receiverId == $party.id and possibleSenders.len > 0:
+    let sender = possibleSenders[0]
+    await party.acceptDelivery(sender, message)
 
 proc handleConnection(party: LocalParty, connection: AsyncSocket) {.async.} =
   defer: connection.close()

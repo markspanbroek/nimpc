@@ -5,7 +5,7 @@ import NiMPC/Parties/Local
 import NiMPC/Parties/Listener
 import NiMPC/Parties/Remote
 import NiMPC/Communication
-
+import examples/Identity
 
 suite "local parties listen for messages on a socket":
 
@@ -55,3 +55,18 @@ suite "local parties listen for messages on a socket":
     await listener.stop()
     expect Exception:
       await newRemoteParty(party1.id).connect(host, port)
+
+  asynctest "ignores envelopes that have a wrong sender":
+    let unknownSender = newLocalParty()
+    await unknownSender.send(proxy1, "hello")
+
+  asynctest "ignores envelopes that have a wrong receiver":
+    let wrongProxy1 = newRemoteParty(exampleIdentity())
+    await wrongProxy1.connect(host, port)
+    defer: wrongProxy1.disconnect()
+    connect(party2, wrongProxy1)
+
+    await party2.send(wrongProxy1, "wrong")
+    await party2.send(proxy1, "ok")
+
+    check (await party1.receiveString(proxy2)) == "ok"
