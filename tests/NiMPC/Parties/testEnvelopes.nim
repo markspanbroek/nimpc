@@ -1,4 +1,5 @@
 import unittest
+import json
 import NiMPC/Parties/Local
 import NiMPC/Parties/Envelopes
 
@@ -41,3 +42,30 @@ suite "envelopes":
     )
 
     check party.checkEnvelope(envelope) == false
+
+  test "raises error when message is missing":
+    let wrong = %*{
+      "sender": $peer.id,
+      "receiver": $party.id
+    }
+
+    expect ValueError:
+      discard parseEnvelope($wrong)
+
+  test "raises error when sender is missing":
+    let wrong = %*{
+      "message": "some message",
+      "receiver": $party.id
+    }
+
+    expect ValueError:
+      discard parseEnvelope($wrong)
+
+  test "raises error when receiver is missing":
+    let wrong = %*{
+      "message": "some message",
+      "sender": $peer.id
+    }
+
+    expect ValueError:
+      discard parseEnvelope($wrong)
