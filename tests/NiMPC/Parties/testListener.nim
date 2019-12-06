@@ -1,6 +1,7 @@
 import unittest
 import asynctest
 import asyncdispatch
+import asyncnet
 import NiMPC/Parties/Local
 import NiMPC/Parties/Listener
 import NiMPC/Parties/Remote
@@ -59,3 +60,9 @@ suite "local parties listen for messages on a socket":
     let unknownSender = newLocalParty()
     await unknownSender.send(proxy1, "hello")
 
+  asynctest "ignores invalid json envelopes":
+    let socket = newAsyncSocket()
+    defer: socket.close()
+    await socket.connect(host, port)
+    let wrong = "not json\n"
+    await socket.send(wrong)

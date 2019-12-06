@@ -10,7 +10,8 @@ type
     future: Future[void]
 
 proc acceptEnvelope(party: LocalParty, envelope: string) {.async.} =
-  let parsed = parseEnvelope(envelope)
+  var parsed: Envelope
+  try: parsed = parseEnvelope(envelope) except ValueError: return
   if party.checkEnvelope(parsed):
     let sender = party.peers[parsed.senderId]
     await party.acceptDelivery(sender, parsed.message)
