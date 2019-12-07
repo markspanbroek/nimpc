@@ -12,6 +12,19 @@ suite "envelopes":
     peer = newLocalParty()
     party.peers.add(peer)
 
+  test "can be serialized to json":
+    let envelope = Envelope(
+      senderId: peer.id,
+      receiverId: party.id,
+      message: "some message"
+    )
+
+    check $envelope == $ %*{
+      "message": envelope.message,
+      "sender": $envelope.senderId,
+      "receiver": $envelope.receiverId
+    }
+
   test "check whether receiver and sender are ok":
     let envelope = Envelope(
       senderId: peer.id,

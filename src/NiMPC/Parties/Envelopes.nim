@@ -29,3 +29,9 @@ proc checkEnvelope*(party: Party, envelope: Envelope): bool =
     party.checkSenderId(envelope.senderId) and
     party.checkReceiverId(envelope.receiverId)
 
+proc `$`*(envelope: Envelope): string =
+  $ %*{
+    "message": envelope.message,
+    "sender": $envelope.senderId,
+    "receiver": $envelope.receiverId
+  }
