@@ -1,11 +1,12 @@
 import unittest
 import json
+import monocypher
 import NiMPC/Parties/Local
 import NiMPC/Parties/Envelopes
 
 suite "envelopes":
 
-  var party, peer: Party
+  var party, peer: LocalParty
 
   setup:
     party = newLocalParty()
@@ -82,3 +83,19 @@ suite "envelopes":
 
     expect ValueError:
       discard parseEnvelope($wrong)
+
+  test "encrypts an envelope":
+    let envelope = Envelope(
+      senderId: peer.id,
+      receiverId: party.id,
+      message: "some message"
+    )
+
+    let sealed = peer.encrypt(envelope)
+
+    let key = crypto_key_exchange(party.secretKey, Key(peer.id))
+    let ciphertext = sealed.ciphertext
+    let mac = sealed.mac
+    let nonce = sealed.nonce
+    let decrypted = crypto_unlock(key, nonce, mac, ciphertext)
+    check cast[string](decrypted) == "some message"

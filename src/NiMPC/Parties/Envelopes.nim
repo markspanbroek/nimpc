@@ -1,12 +1,21 @@
 import json
+import sysrandom
+import monocypher
 import Identity
 import Basics
+import Local
 
 type
   Envelope* = object
     senderId*: Identity
     receiverId*: Identity
     message*: string
+  SealedEnvelope* = object
+    senderId*: Identity
+    receiverId*: Identity
+    nonce*: Nonce
+    mac*: Mac
+    ciphertext*: seq[byte]
 
 proc parseEnvelope*(s: string): Envelope =
   let json = parseJson(s)
@@ -35,3 +44,15 @@ proc `$`*(envelope: Envelope): string =
     "sender": $envelope.senderId,
     "receiver": $envelope.receiverId
   }
+
+proc encrypt*(sender: LocalParty, envelope: Envelope): SealedEnvelope =
+  let key = crypto_key_exchange(sender.secretKey, Key(envelope.receiverId))
+  defer: crypto_wipe(key)
+
+  let plaintext = cast[seq[byte]](envelope.message)
+  let nonce = getRandomBytes(sizeof(Nonce))
+  let (mac, ciphertext) = crypto_lock(key, nonce, plaintext)
+
+  result.ciphertext = ciphertext
+  result.mac = mac
+  result.nonce = nonce
