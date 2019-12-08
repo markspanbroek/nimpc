@@ -123,3 +123,13 @@ suite "envelopes":
 
     check sealed.senderId == envelope.senderId
     check sealed.receiverId == envelope.receiverId
+
+  test "decrypts a sealed envelope":
+    let envelope = Envelope(
+      senderId: peer.id,
+      receiverId: party.id,
+      message: "some message"
+    )
+    let sealed = peer.encrypt(envelope)
+    let decrypted = party.decrypt(sealed)
+    check decrypted == envelope

@@ -60,3 +60,16 @@ proc encrypt*(sender: LocalParty, envelope: Envelope): SealedEnvelope =
   result.ciphertext = ciphertext
   result.mac = mac
   result.nonce = nonce
+
+proc decrypt*(receiver: LocalParty, sealed: SealedEnvelope): Envelope =
+  let key = crypto_key_exchange(receiver.secretKey, Key(sealed.senderId))
+  defer: crypto_wipe(key)
+
+  let nonce = sealed.nonce
+  let mac = sealed.mac
+  let ciphertext = sealed.ciphertext
+  let decrypted = crypto_unlock(key, nonce, mac, ciphertext)
+
+  result.senderId = sealed.senderId
+  result.receiverId = sealed.receiverId
+  result.message = cast[string](decrypted)
