@@ -1,6 +1,7 @@
 import json
 import sysrandom
 import monocypher
+import HexString
 import Identity
 import Basics
 import Local
@@ -73,3 +74,12 @@ proc decrypt*(receiver: LocalParty, sealed: SealedEnvelope): Envelope =
   result.senderId = sealed.senderId
   result.receiverId = sealed.receiverId
   result.message = cast[string](decrypted)
+
+proc `$`*(sealed: SealedEnvelope): string =
+  $ %*{
+    "sender": $sealed.senderId,
+    "receiver": $sealed.receiverId,
+    "nonce": hex sealed.nonce,
+    "mac": hex sealed.mac,
+    "ciphertext": hex sealed.ciphertext
+  }

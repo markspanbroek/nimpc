@@ -1,6 +1,7 @@
 import unittest
 import json
 import monocypher
+import NiMPC/Parties/HexString
 import NiMPC/Parties/Local
 import NiMPC/Parties/Envelopes
 
@@ -109,3 +110,13 @@ suite "envelopes":
     let sealed = peer.encrypt(envelope)
     let decrypted = party.decrypt(sealed)
     check decrypted == envelope
+
+  test "sealed envelope can be serialized to json":
+    let sealed = peer.encrypt(envelope)
+    check $sealed == $ %*{
+      "sender": $sealed.senderId,
+      "receiver": $sealed.receiverId,
+      "nonce": hex sealed.nonce,
+      "mac": hex sealed.mac,
+      "ciphertext": hex sealed.ciphertext
+    }
