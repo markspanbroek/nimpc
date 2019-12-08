@@ -55,6 +55,8 @@ proc encrypt*(sender: LocalParty, envelope: Envelope): SealedEnvelope =
   let nonce = getRandomBytes(sizeof(Nonce))
   let (mac, ciphertext) = crypto_lock(key, nonce, plaintext)
 
+  result.senderId = envelope.senderId
+  result.receiverId = envelope.receiverId
   result.ciphertext = ciphertext
   result.mac = mac
   result.nonce = nonce

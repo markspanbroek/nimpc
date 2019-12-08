@@ -111,3 +111,15 @@ suite "envelopes":
 
     expect Exception:
       discard party.encrypt(envelope)
+
+  test "writes correct sender and receiver on sealed envelope":
+    let envelope = Envelope(
+      senderId: peer.id,
+      receiverId: party.id,
+      message: "some message"
+    )
+
+    let sealed = peer.encrypt(envelope)
+
+    check sealed.senderId == envelope.senderId
+    check sealed.receiverId == envelope.receiverId
