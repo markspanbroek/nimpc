@@ -46,6 +46,8 @@ proc `$`*(envelope: Envelope): string =
   }
 
 proc encrypt*(sender: LocalParty, envelope: Envelope): SealedEnvelope =
+  assert(sender.id == envelope.senderId)
+
   let key = crypto_key_exchange(sender.secretKey, Key(envelope.receiverId))
   defer: crypto_wipe(key)
 

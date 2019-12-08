@@ -99,3 +99,15 @@ suite "envelopes":
     let nonce = sealed.nonce
     let decrypted = crypto_unlock(key, nonce, mac, ciphertext)
     check cast[string](decrypted) == "some message"
+
+  test "refused to encrypt an envelope where the sender does not match":
+    let wrong = newLocalParty()
+
+    let envelope = Envelope(
+      senderId: wrong.id,
+      receiverId: party.id,
+      message: "some message"
+    )
+
+    expect Exception:
+      discard party.encrypt(envelope)
