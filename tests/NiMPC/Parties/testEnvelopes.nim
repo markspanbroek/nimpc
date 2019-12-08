@@ -7,19 +7,19 @@ import NiMPC/Parties/Envelopes
 suite "envelopes":
 
   var party, peer: LocalParty
+  var envelope: Envelope
 
   setup:
     party = newLocalParty()
     peer = newLocalParty()
     party.peers.add(peer)
-
-  test "can be serialized to json":
-    let envelope = Envelope(
+    envelope = Envelope(
       senderId: peer.id,
       receiverId: party.id,
       message: "some message"
     )
 
+  test "can be serialized to json":
     check $envelope == $ %*{
       "message": envelope.message,
       "sender": $envelope.senderId,
@@ -27,12 +27,6 @@ suite "envelopes":
     }
 
   test "check whether receiver and sender are ok":
-    let envelope = Envelope(
-      senderId: peer.id,
-      receiverId: party.id,
-      message: "some message"
-    )
-
     check party.checkEnvelope(envelope)
 
   test "do not accept wrong sender":
@@ -85,12 +79,6 @@ suite "envelopes":
       discard parseEnvelope($wrong)
 
   test "encrypts an envelope":
-    let envelope = Envelope(
-      senderId: peer.id,
-      receiverId: party.id,
-      message: "some message"
-    )
-
     let sealed = peer.encrypt(envelope)
 
     let key = crypto_key_exchange(party.secretKey, Key(peer.id))
@@ -113,23 +101,11 @@ suite "envelopes":
       discard party.encrypt(envelope)
 
   test "writes correct sender and receiver on sealed envelope":
-    let envelope = Envelope(
-      senderId: peer.id,
-      receiverId: party.id,
-      message: "some message"
-    )
-
     let sealed = peer.encrypt(envelope)
-
     check sealed.senderId == envelope.senderId
     check sealed.receiverId == envelope.receiverId
 
   test "decrypts a sealed envelope":
-    let envelope = Envelope(
-      senderId: peer.id,
-      receiverId: party.id,
-      message: "some message"
-    )
     let sealed = peer.encrypt(envelope)
     let decrypted = party.decrypt(sealed)
     check decrypted == envelope
