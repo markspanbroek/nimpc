@@ -15,7 +15,7 @@ type
 
 proc init*(party: var LocalParty, secretKey: Key) =
   party.secretKey = secretKey
-  let publicKey = crypto_sign_public_key(secretKey)
+  let publicKey = crypto_key_exchange_public_key(secretKey)
   let identity = initIdentity(publicKey)
   Party(party).init(identity)
 
