@@ -2,6 +2,7 @@ import strutils
 import sequtils
 import hashes
 import monocypher
+import HexString
 
 type
   Identity* = distinct Key
@@ -13,8 +14,7 @@ proc publicKey*(identity: Identity): Key =
   Key(identity)
 
 proc `$`*(identity: Identity): string =
-  let publicKey = identity.publicKey
-  cast[string](publicKey.toSeq()).toHex()
+  hex(identity.publicKey)
 
 proc fromStringBytes[T](s: string): T =
   if s.len != sizeof(result):
