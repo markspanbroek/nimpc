@@ -2,6 +2,7 @@ import hashes
 import strformat
 import asyncdispatch
 import Identity
+import Envelopes
 export Identity
 
 type
@@ -14,7 +15,7 @@ proc init*(party: Party, id: Identity) =
 
 method acceptDelivery*(receiver: Party,
                        sender: Party,
-                       messsage: string) {.async,base.} =
+                       messsage: SealedEnvelope) {.async,base.} =
   assert(false, "base method called, should be overridden")
 
 proc `==`*(a, b: Party): bool =

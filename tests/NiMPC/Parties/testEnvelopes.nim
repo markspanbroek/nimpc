@@ -27,31 +27,6 @@ suite "envelopes":
       "receiver": $envelope.receiverId
     }
 
-  test "check whether receiver and sender are ok":
-    check party.checkEnvelope(envelope)
-
-  test "do not accept wrong sender":
-    let wrong = newLocalParty()
-
-    let envelope = Envelope(
-      senderId: wrong.id,
-      receiverId: party.id,
-      message: "some message"
-    )
-
-    check party.checkEnvelope(envelope) == false
-
-  test "do not accept wrong receiver":
-    let wrong = newLocalParty()
-
-    let envelope = Envelope(
-      senderId: peer.id,
-      receiverId: wrong.id,
-      message: "some message"
-    )
-
-    check party.checkEnvelope(envelope) == false
-
   test "raises error when message is missing":
     let wrong = %*{
       "sender": $peer.id,
@@ -101,3 +76,4 @@ suite "envelopes":
       expect ValueError:
         discard parseSealedEnvelope($json)
 
+# TODO: remove code for serializing/deserializing plain Envelopes

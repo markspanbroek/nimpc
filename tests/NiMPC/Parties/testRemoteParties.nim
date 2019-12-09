@@ -4,6 +4,7 @@ import strutils
 import http
 import sysrandom
 import monocypher
+import examples/Envelopes
 import NiMPC/Parties/Local
 import NiMPC/Parties/Remote
 
@@ -21,7 +22,7 @@ suite "connected remote parties":
   let port = Port(34590)
 
   var party: RemoteParty
-  var sender: Party
+  var sender: LocalParty
   var received: Future[string]
 
   asyncsetup:
@@ -34,26 +35,18 @@ suite "connected remote parties":
     discard await received
 
   asynctest "forward messages over a socket":
-    await party.acceptDelivery(sender, "one")
-    await party.acceptDelivery(sender, "two")
+    let envelope1 = exampleSealedEnvelope()
+    let envelope2 = exampleSealedEnvelope()
+
+    await party.acceptDelivery(sender, envelope1)
+    await party.acceptDelivery(sender, envelope2)
     party.disconnect()
 
-    check (await received).contains("one")
-    check (await received).contains("two")
+    check (await received).contains($envelope1)
+    check (await received).contains($envelope2)
 
   asynctest "cannot connect twice":
     defer: party.disconnect()
     expect Exception:
       await party.connect(host, port)
 
-  asynctest "envelope contains sender":
-    await party.acceptDelivery(sender, "some message")
-    party.disconnect()
-
-    check (await received).contains($sender.id)
-
-  asynctest "envelope contains receiver":
-    await party.acceptDelivery(sender, "some message")
-    party.disconnect()
-
-    check (await received).contains($party.id)

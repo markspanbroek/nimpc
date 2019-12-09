@@ -3,14 +3,19 @@ import asyncdispatch
 import marshal
 import Parties/Basics
 import Parties/Local
+import Parties/Envelopes
+import Parties/Encryption
 import Parties
 export Parties
 
-proc send*[T](sender: Party, recipient: Party, value: T) {.async.} =
-  await recipient.acceptDelivery(sender, $$value)
+proc send*[T](sender: LocalParty, recipient: Party, value: T) {.async.} =
+  let envelope = Envelope(senderId: sender.id, receiverId: recipient.id, message: $$value)
+  let sealed = sender.encrypt(envelope)
+  await recipient.acceptDelivery(sender, sealed)
 
 proc receive*[T](recipient: LocalParty, sender: Party): Future[T] {.async.} =
-  let message = await receiveMessage(recipient, sender)
+  let sealed = await receiveMessage(recipient, sender)
+  let message = recipient.decrypt(sealed).message
   result = to[T](message)
 
 proc receiveUint64*(recipient: LocalParty,

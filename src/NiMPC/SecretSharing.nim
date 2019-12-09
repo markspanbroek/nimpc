@@ -25,7 +25,7 @@ proc reveal*(secret: Secret): Future[uint32] {.async.} =
   await secret.disclose()
   result = await secret.open()
 
-proc shareWithPeers(party: Party, input: uint32): Future[Share] {.async.} =
+proc shareWithPeers(party: LocalParty, input: uint32): Future[Share] {.async.} =
   var shares = @[random[Share]()]
   for receiver in party.peers:
     shares.add random[Share]()

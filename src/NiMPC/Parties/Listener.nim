@@ -3,6 +3,7 @@ import asyncnet
 import Local
 import Sockets
 import Envelopes
+import CheckEnvelope
 
 type
   Listener* = ref object
@@ -10,11 +11,11 @@ type
     future: Future[void]
 
 proc acceptEnvelope(party: LocalParty, envelope: string) {.async.} =
-  var parsed: Envelope
-  try: parsed = parseEnvelope(envelope) except ValueError: return
+  var parsed: SealedEnvelope
+  try: parsed = parseSealedEnvelope(envelope) except ValueError: return
   if party.checkEnvelope(parsed):
     let sender = party.peers[parsed.senderId]
-    await party.acceptDelivery(sender, parsed.message)
+    await party.acceptDelivery(sender, parsed)
 
 proc handleConnection(party: LocalParty, connection: AsyncSocket) {.async.} =
   defer: connection.close()
