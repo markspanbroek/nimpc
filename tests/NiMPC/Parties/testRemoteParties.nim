@@ -3,10 +3,11 @@ import asynctest
 import strutils
 import http
 import examples/Envelopes
+import examples/Identity
 import NiMPC/Parties/Local
 import NiMPC/Parties/Remote
 
-let identity: Identity = initIdentity(getRandomBytes(sizeof(Key)))
+let identity: Identity = exampleIdentity()
 
 suite "remote parties":
 
