@@ -1,6 +1,7 @@
 import unittest
 import NiMPC/Parties/Local
 import NiMPC/Parties/Envelopes
+import NiMPC/Parties/Encryption
 import NiMPC/Parties/CheckEnvelope
 
 suite "check envelope":
