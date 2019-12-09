@@ -13,11 +13,12 @@ type
     inbox: Inbox
     secretKey*: Key
 
-proc init*(party: var LocalParty, secretKey: Key) =
-  party.secretKey = secretKey
+proc newLocalParty*(secretKey: Key = getRandomBytes(sizeof(Key))): LocalParty =
+  new(result)
+  result.secretKey = secretKey
   let publicKey = crypto_key_exchange_public_key(secretKey)
   let identity = initIdentity(publicKey)
-  Party(party).init(identity)
+  result.init(identity)
 
 proc destroy*(party: LocalParty) =
   crypto_wipe(party.secretKey)
@@ -25,10 +26,6 @@ proc destroy*(party: LocalParty) =
 proc destroy*(parties: varargs[LocalParty]) =
   for party in parties:
     destroy(party)
-
-proc newLocalParty*(secretKey: Key = getRandomBytes(sizeof(Key))): LocalParty =
-  new(result)
-  init(result, secretKey)
 
 proc messagesFrom(inbox: var Inbox, sender: Party): Messages =
   inbox.mgetOrPut(sender, newFutureStream[string]())
