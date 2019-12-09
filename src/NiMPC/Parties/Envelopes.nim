@@ -83,3 +83,11 @@ proc `$`*(sealed: SealedEnvelope): string =
     "mac": hex sealed.mac,
     "ciphertext": hex sealed.ciphertext
   }
+
+proc parseSealedEnvelope*(s: string): SealedEnvelope =
+  let json = parseJson(s)
+  result.senderId = parseIdentity(json["sender"].getStr())
+  result.receiverId = parseIdentity(json["receiver"].getStr())
+  result.nonce = parseHexArray(json["nonce"].getStr(), sizeof(Nonce))
+  result.mac = parseHexArray(json["mac"].getStr(), sizeof(Mac))
+  result.ciphertext = parseHexSeq(json["ciphertext"].getStr())

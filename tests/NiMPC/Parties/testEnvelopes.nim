@@ -120,3 +120,16 @@ suite "envelopes":
       "mac": hex sealed.mac,
       "ciphertext": hex sealed.ciphertext
     }
+
+  test "parses a sealed envelope":
+    let sealed = peer.encrypt(envelope)
+    check parseSealedEnvelope($sealed) == sealed
+
+  test "parsing fails when field is wrong":
+    let sealed = peer.encrypt(envelope)
+    for field in ["sender", "receiver", "nonce", "mac", "ciphertext"]:
+      var json = parseJson($sealed)
+      json[field] = %"wrong"
+      expect ValueError:
+        discard parseSealedEnvelope($json)
+
