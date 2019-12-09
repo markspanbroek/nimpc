@@ -20,7 +20,7 @@ method disconnect*(party: RemoteParty) {.base.} =
   assert party.socket != nil
   party.socket.close()
 
-method acceptDelivery*(receiver: RemoteParty,
+method acceptDelivery*(recipient: RemoteParty,
                        sender: Party,
                        message: SealedEnvelope) {.async.} =
-  await receiver.socket.send($message & "\n")
+  await recipient.socket.send($message & "\n")

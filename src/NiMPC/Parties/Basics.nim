@@ -13,7 +13,7 @@ type
 proc init*(party: Party, id: Identity) =
   party.id = id
 
-method acceptDelivery*(receiver: Party,
+method acceptDelivery*(recipient: Party,
                        sender: Party,
                        messsage: SealedEnvelope) {.async,base.} =
   assert(false, "base method called, should be overridden")

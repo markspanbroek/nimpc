@@ -27,9 +27,9 @@ proc reveal*(secret: Secret): Future[uint32] {.async.} =
 
 proc shareWithPeers(party: LocalParty, input: uint32): Future[Share] {.async.} =
   var shares = @[random[Share]()]
-  for receiver in party.peers:
+  for recipient in party.peers:
     shares.add random[Share]()
-    await party.send(receiver, shares[^1])
+    await party.send(recipient, shares[^1])
   result = shares[0] - sum(shares) + input
 
 proc share*(party: LocalParty, input: uint32): Secret =

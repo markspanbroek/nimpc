@@ -4,10 +4,10 @@ import ../SecretSharing/Internals
 import ../Communication
 export Communication
 
-proc receiveShare*(receiver: LocalParty, sender: Party):
+proc receiveShare*(recipient: LocalParty, sender: Party):
                     Future[Share] {.async.} =
-  result = await receive[Share](receiver, sender)
+  result = await receive[Share](recipient, sender)
 
-proc receiveShares*(receiver: LocalParty, sender: Party):
+proc receiveShares*(recipient: LocalParty, sender: Party):
                     Future[seq[Share]] {.async.} =
-  result = await receive[seq[Share]](receiver, sender)
+  result = await receive[seq[Share]](recipient, sender)

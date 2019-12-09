@@ -9,7 +9,7 @@ import Parties
 export Parties
 
 proc send*[T](sender: LocalParty, recipient: Party, value: T) {.async.} =
-  let envelope = Envelope(senderId: sender.id, receiverId: recipient.id, message: $$value)
+  let envelope = Envelope(senderId: sender.id, recipientId: recipient.id, message: $$value)
   let sealed = sender.encrypt(envelope)
   await recipient.acceptDelivery(sender, sealed)
 

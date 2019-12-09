@@ -8,7 +8,7 @@ proc exampleSealedEnvelope*: SealedEnvelope =
   let sender = newLocalParty()
   let envelope = Envelope(
     senderId: sender.id,
-    receiverId: exampleIdentity(),
+    recipientId: exampleIdentity(),
     message: "example"
   )
   return sender.encrypt(envelope)

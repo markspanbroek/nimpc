@@ -16,7 +16,7 @@ suite "envelopes":
     party.peers.add(peer)
     envelope = Envelope(
       senderId: peer.id,
-      receiverId: party.id,
+      recipientId: party.id,
       message: "some message"
     )
 
@@ -24,13 +24,13 @@ suite "envelopes":
     check $envelope == $ %*{
       "message": envelope.message,
       "sender": $envelope.senderId,
-      "receiver": $envelope.receiverId
+      "recipient": $envelope.recipientId
     }
 
   test "raises error when message is missing":
     let wrong = %*{
       "sender": $peer.id,
-      "receiver": $party.id
+      "recipient": $party.id
     }
 
     expect ValueError:
@@ -39,13 +39,13 @@ suite "envelopes":
   test "raises error when sender is missing":
     let wrong = %*{
       "message": "some message",
-      "receiver": $party.id
+      "recipient": $party.id
     }
 
     expect ValueError:
       discard parseEnvelope($wrong)
 
-  test "raises error when receiver is missing":
+  test "raises error when recipient is missing":
     let wrong = %*{
       "message": "some message",
       "sender": $peer.id
@@ -58,7 +58,7 @@ suite "envelopes":
     let sealed = peer.encrypt(envelope)
     check $sealed == $ %*{
       "sender": $sealed.senderId,
-      "receiver": $sealed.receiverId,
+      "recipient": $sealed.recipientId,
       "nonce": hex sealed.nonce,
       "mac": hex sealed.mac,
       "ciphertext": hex sealed.ciphertext
@@ -70,7 +70,7 @@ suite "envelopes":
 
   test "parsing fails when field is wrong":
     let sealed = peer.encrypt(envelope)
-    for field in ["sender", "receiver", "nonce", "mac", "ciphertext"]:
+    for field in ["sender", "recipient", "nonce", "mac", "ciphertext"]:
       var json = parseJson($sealed)
       json[field] = %"wrong"
       expect ValueError:

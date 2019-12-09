@@ -8,10 +8,10 @@ proc checkSenderId(party: Party, senderId: Identity): bool =
   except IndexError:
     return false
 
-proc checkReceiverId(party: Party, receiverId: Identity): bool =
-  return party.id == receiverId
+proc checkRecipientId(party: Party, recipientId: Identity): bool =
+  return party.id == recipientId
 
 proc checkEnvelope*(party: Party, envelope: SealedEnvelope): bool =
   return
     party.checkSenderId(envelope.senderId) and
-    party.checkReceiverId(envelope.receiverId)
+    party.checkRecipientId(envelope.recipientId)

@@ -15,11 +15,11 @@ suite "check envelope":
     party.peers.add(peer)
     envelope = peer.encrypt(Envelope(
       senderId: peer.id,
-      receiverId: party.id,
+      recipientId: party.id,
       message: "some message"
     ))
 
-  test "check whether receiver and sender are ok":
+  test "check whether recipient and sender are ok":
     check party.checkEnvelope(envelope)
 
   test "do not accept wrong sender":
@@ -27,18 +27,18 @@ suite "check envelope":
 
     let envelope = wrong.encrypt(Envelope(
       senderId: wrong.id,
-      receiverId: party.id,
+      recipientId: party.id,
       message: "some message"
     ))
 
     check party.checkEnvelope(envelope) == false
 
-  test "do not accept wrong receiver":
+  test "do not accept wrong recipient":
     let wrong = newLocalParty()
 
     let envelope = peer.encrypt(Envelope(
       senderId: peer.id,
-      receiverId: wrong.id,
+      recipientId: wrong.id,
       message: "some message"
     ))
 

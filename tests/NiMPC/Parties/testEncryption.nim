@@ -15,7 +15,7 @@ suite "encryption":
     party.peers.add(peer)
     envelope = Envelope(
       senderId: peer.id,
-      receiverId: party.id,
+      recipientId: party.id,
       message: "some message"
     )
 
@@ -34,17 +34,17 @@ suite "encryption":
 
     let envelope = Envelope(
       senderId: wrong.id,
-      receiverId: party.id,
+      recipientId: party.id,
       message: "some message"
     )
 
     expect Exception:
       discard party.encrypt(envelope)
 
-  test "writes correct sender and receiver on sealed envelope":
+  test "writes correct sender and recipient on sealed envelope":
     let sealed = peer.encrypt(envelope)
     check sealed.senderId == envelope.senderId
-    check sealed.receiverId == envelope.receiverId
+    check sealed.recipientId == envelope.recipientId
 
   test "decrypts a sealed envelope":
     let sealed = peer.encrypt(envelope)

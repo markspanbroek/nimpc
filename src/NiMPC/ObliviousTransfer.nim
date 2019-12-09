@@ -13,21 +13,21 @@ type
   SendResult = (Keys, Keys)
   ReceiveResult = Keys
 
-proc sendOT*(sender: LocalParty, receiver: Party, amount:uint=4):
+proc sendOT*(sender: LocalParty, recipient: Party, amount:uint=4):
              Future[SendResult] {.async.} =
   assert amount mod 4 == 0
   let otSenders = newSeqWith(int(amount div 4), Sender())
   let senderMessages = otSenders.generateSecrets()
-  await sender.send(receiver, senderMessages)
-  let receiverMessages = await sender.receiveReceiverMessages(receiver)
+  await sender.send(recipient, senderMessages)
+  let receiverMessages = await sender.receiveReceiverMessages(recipient)
   result = otSenders.generateKeys(receiverMessages)
 
-proc receiveOT*(receiver: LocalParty, sender: Party, choiceBits: ChoiceBits):
+proc receiveOT*(recipient: LocalParty, sender: Party, choiceBits: ChoiceBits):
                 Future[ReceiveResult] {.async.} =
   let amount = uint(choiceBits.len)
   assert amount mod 4 == 0
   let otReceivers = newSeqWith(int(amount div 4), Receiver())
-  let senderMessages = await receiver.receiveSenderMessages(sender)
+  let senderMessages = await recipient.receiveSenderMessages(sender)
   let receiverMessages = otReceivers.generateSecrets(senderMessages, choiceBits)
-  await receiver.send(sender, receiverMessages)
+  await recipient.send(sender, receiverMessages)
   result = otReceivers.generateKeys()
