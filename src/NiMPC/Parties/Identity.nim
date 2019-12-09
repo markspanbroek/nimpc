@@ -1,5 +1,4 @@
 import strutils
-import sequtils
 import hashes
 import monocypher
 import HexString
