@@ -13,6 +13,7 @@ type
   LocalParty* = ref object of Party
     inbox: Inbox
     secretKey*: Key
+    peerEncryptionKeys*: Table[Identity, Key]
 
 proc newLocalParty*(secretKey: Key = getRandomBytes(sizeof(Key))): LocalParty =
   new(result)
@@ -21,8 +22,17 @@ proc newLocalParty*(secretKey: Key = getRandomBytes(sizeof(Key))): LocalParty =
   let identity = initIdentity(publicKey)
   result.init(identity)
 
+proc peerEncryptionKey*(party: LocalParty, peerId: Identity): Key =
+  if party.peerEncryptionKeys.hasKey(peerId):
+    result = party.peerEncryptionKeys[peerId]
+  else:
+    result = crypto_key_exchange(party.secretKey, Key(peerId))
+    party.peerEncryptionKeys[peerId] = result
+
 proc destroy*(party: LocalParty) =
   crypto_wipe(party.secretKey)
+  for id in party.peerEncryptionKeys.keys:
+    crypto_wipe(party.peerEncryptionKeys[id])
 
 proc destroy*(parties: varargs[LocalParty]) =
   for party in parties:

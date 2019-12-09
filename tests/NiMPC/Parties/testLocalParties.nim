@@ -1,4 +1,6 @@
 import unittest
+import tables
+import sysrandom
 import monocypher
 import NiMPC/Parties/Basics
 import NiMPC/Parties/Local
@@ -16,6 +18,22 @@ suite "local parties":
       secretKeyPtr = addr party.secretKey
     var empty: Key
     check secretKeyPtr[] == empty
+
+  test "calculate keys to communicate with their peers":
+    let party, peer = newLocalParty()
+    let sharedKey = crypto_key_exchange(party.secretKey, Key(peer.id))
+    check party.peerEncryptionKey(peer.id) == sharedKey
+
+  test "wipe their peer keys when destroyed":
+    let party, peer1, peer2 = newLocalParty()
+    party.peerEncryptionKeys[peer1.id] = getRandomBytes(sizeof(Key))
+    party.peerEncryptionKeys[peer2.id] = getRandomBytes(sizeof(Key))
+
+    party.destroy()
+
+    var empty: Key
+    check party.peerEncryptionKeys[peer1.id] == empty
+    check party.peerEncryptionKeys[peer2.id] == empty
 
   test "refer to their peers by id":
     let party, peer1, peer2: Party = newLocalParty()

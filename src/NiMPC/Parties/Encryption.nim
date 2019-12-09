@@ -6,7 +6,7 @@ import monocypher
 proc encrypt*(sender: LocalParty, envelope: Envelope): SealedEnvelope =
   assert(sender.id == envelope.senderId)
 
-  let key = crypto_key_exchange(sender.secretKey, Key(envelope.receiverId))
+  let key = sender.peerEncryptionKey(envelope.receiverId)
   defer: crypto_wipe(key)
 
   let plaintext = cast[seq[byte]](envelope.message)
@@ -20,7 +20,7 @@ proc encrypt*(sender: LocalParty, envelope: Envelope): SealedEnvelope =
   result.nonce = nonce
 
 proc decrypt*(receiver: LocalParty, sealed: SealedEnvelope): Envelope =
-  let key = crypto_key_exchange(receiver.secretKey, Key(sealed.senderId))
+  let key  = receiver.peerEncryptionKey(sealed.senderId)
   defer: crypto_wipe(key)
 
   let nonce = sealed.nonce
