@@ -54,7 +54,7 @@ suite "local parties listen for messages on a socket":
   asynctest "stops listening for incoming connections":
     await listener.stop()
     expect Exception:
-      await newRemoteParty(party1.id).connect(host, port)
+      await newAsyncSocket().connect(host, port)
 
   asynctest "ignores unacceptable messages":
     let unknownSender = newLocalParty()

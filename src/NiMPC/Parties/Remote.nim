@@ -13,8 +13,14 @@ proc newRemoteParty*(identity: Identity): RemoteParty =
 
 method connect*(party: RemoteParty, host: string, port: Port) {.async,base.} =
   assert party.socket == nil
-  party.socket = newAsyncSocket()
-  await party.socket.connect(host, port)
+  var connected = false
+  while not connected:
+    party.socket = newAsyncSocket()
+    try:
+      await party.socket.connect(host, port)
+      connected = true
+    except OSError:
+      await sleepAsync(1000)
 
 method disconnect*(party: RemoteParty) {.base.} =
   assert party.socket != nil

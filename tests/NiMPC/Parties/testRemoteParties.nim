@@ -7,6 +7,8 @@ import examples/Identity
 import NiMPC/Parties/Local
 import NiMPC/Parties/Remote
 
+let host = "localhost"
+let port = Port(34590)
 let identity: Identity = exampleIdentity()
 
 suite "remote parties":
@@ -15,11 +17,15 @@ suite "remote parties":
     expect Exception:
       newRemoteParty(identity).disconnect()
 
+  asynctest "wait for the remote socket to open":
+    let party = newRemoteParty(identity)
+    let connecting = party.connect(host, port)
+    let receiving = receive(host, port)
+    await connecting
+    party.disconnect()
+    discard await receiving
+
 suite "connected remote parties":
-
-  let host = "localhost"
-  let port = Port(34590)
-
   var party: RemoteParty
   var sender: LocalParty
   var received: Future[string]
