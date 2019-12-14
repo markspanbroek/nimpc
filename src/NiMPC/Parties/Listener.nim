@@ -19,10 +19,10 @@ proc acceptEnvelope(party: LocalParty, envelope: string) {.async.} =
 
 proc handleConnection(party: LocalParty, connection: AsyncSocket) {.async.} =
   defer: connection.close()
-  while not connection.isClosed:
+  while true:
     let envelope = await connection.recvLine()
-    if envelope != "":
-      await party.acceptEnvelope(envelope)
+    if envelope == "": break
+    await party.acceptEnvelope(envelope)
 
 proc newListener(socket: AsyncSocket, future: Future[void]): Listener =
   new(result)
