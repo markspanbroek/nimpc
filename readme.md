@@ -12,7 +12,7 @@ Work in Progress
 This is very much a work in progress. At least the following still needs to be
 implemented before it can be considered feature complete:
 
-- [ ] A networking layer, to run multiple parties on separate machines.
+- [x] A networking layer, to run multiple parties on separate machines.
 - [ ] Support for more mathematical operations, such as division and square
       root.
 - [ ] MAC checking, to make computations safe against active adversaries.
@@ -30,8 +30,13 @@ Add the following to its .nimble file:
 
     requires "NiMPC >= 0.3.0 & < 0.4.0"
 
-Example
--------
+Examples
+--------
+
+### Local Computation
+
+Perform a computation with two parties. For now, both parties will run on the
+same machine, we'll cover how to connect parties over a network later.
 
 Import these modules:
 ```nim
@@ -39,8 +44,7 @@ import NiMPC
 import asyncdispatch
 ```
 
-Create two parties that will jointly perform a computation. Because we have not
-implemented a networking layer yet, both parties will run on the same machine.
+Create two parties that will jointly perform a computation.
 ```nim
 let party1, party2 = newLocalParty()
 ```
@@ -92,6 +96,83 @@ proc computation2 {.async.} =
   let input2: Secret = party2.share(2)
   let product: Secret = input1 * input2
   let revealed: uint32 = await product.reveal() # equals 42
+```
+
+Run the multi-party computation:
+```nim
+waitFor all(computation1(), computation2())
+```
+
+### Networking
+
+Perform a computation with two parties over a network connection. Just like the
+previous example we start with two parties, but we do not connect them just yet.
+
+```nim
+import NiMPC
+import asyncdispatch
+
+let party1, party2 = newLocalParty()
+defer: destroy(party1, party2)
+```
+
+These parties will listen on different ports on localhost.
+
+```nim
+const host = "localhost"
+const port1 = Port(23455)
+const port2 = Port(23456)
+```
+
+Specify the computation that the first party will perform.
+```nim
+proc computation1 {.async.} =
+```
+
+Start listening for incoming messages on the correct port.
+```nim
+  let listener = party1.listen(host, port1)
+```
+
+Ensure that we stop listening when the listener is no longer in scope:
+```nim
+  defer: await listener.stop()
+```
+
+Connect to the second party. This returns a proxy for the Party that is running
+on the other side of the connection.
+```nim
+  let proxy2 = await party1.connect(party2.id, host, port2)
+```
+
+Ensure that we close the connection when the proxy is no longer in scope.
+```nim
+  defer: proxy2.disconnect()
+```
+
+Use the local party and the proxy for the remote party to perform the
+computation.
+
+```nim
+  let input1 = party1.share(21)
+  let input2 = party1.obtain(proxy2)
+  let product = input1 * input2
+  let revealed = await product.reveal() # equals 42
+```
+
+Specify the equivalent computation for the second party:
+```nim
+proc computation2 {.async.} =
+  let listener = party2.listen(host, port2)
+  defer: await listener.stop()
+
+  let proxy1 = await party2.connect(party1.id, host, port1)
+  defer: proxy1.disconnect()
+
+  let input1 = party2.obtain(proxy1)
+  let input2 = party2.share(2)
+  let product= input1 * input2
+  let revealed = await product.reveal() # equals 42
 ```
 
 Run the multi-party computation:
