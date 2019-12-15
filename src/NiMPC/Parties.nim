@@ -14,7 +14,6 @@ export Connections.isFirst
 export Local.LocalParty
 export Local.newLocalParty
 export Local.destroy
-export Remote.newRemoteParty
 export Remote.connect
 export Remote.disconnect
 export Listener.listen

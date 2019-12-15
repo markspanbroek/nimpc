@@ -2,6 +2,7 @@ import asyncdispatch
 import asyncnet
 import strutils
 import Basics
+import Connections
 import Envelopes
 
 type RemoteParty* = ref object of Party
@@ -21,6 +22,11 @@ method connect*(party: RemoteParty, host: string, port: Port) {.async,base.} =
       connected = true
     except OSError:
       await sleepAsync(1000)
+
+proc connect*(party: Party, id: Identity, host: string, port: Port): Future[RemoteParty] {.async.} =
+  result = newRemoteParty(id)
+  party.connect(result)
+  await result.connect(host, port)
 
 method disconnect*(party: RemoteParty) {.base.} =
   assert party.socket != nil

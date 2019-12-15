@@ -18,10 +18,9 @@ suite "remote parties":
       newRemoteParty(identity).disconnect()
 
   asynctest "wait for the remote socket to open":
-    let party = newRemoteParty(identity)
-    let connecting = party.connect(host, port)
+    let connecting = newLocalParty().connect(identity, host, port)
     let receiving = receive(host, port)
-    await connecting
+    let party = await connecting
     party.disconnect()
     discard await receiving
 
@@ -31,10 +30,9 @@ suite "connected remote parties":
   var received: Future[string]
 
   asyncsetup:
-    party = newRemoteParty(identity)
     sender = newLocalParty()
     received = receive(host, port)
-    await party.connect(host, port)
+    party = await sender.connect(identity, host, port)
 
   asyncteardown:
     discard await received
