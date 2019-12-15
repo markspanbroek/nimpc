@@ -6,6 +6,9 @@ language. Allows you to do joint computations with multiple parties while each
 party keeps their inputs private. We're working towards an implementation of the
 [SPDZ2k][spdz2k] protocol.
 
+
+![CI Status](https://github.com/markspanbroek/nimpc/workflows/CI/badge.svg)
+
 Work in Progress
 ----------------
 
