@@ -21,7 +21,7 @@ method connect*(party: RemoteParty, host: string, port: Port) {.async,base.} =
       await party.socket.connect(host, port)
       connected = true
     except OSError:
-      await sleepAsync(1000)
+      await sleepAsync(500)
 
 proc connect*(party: Party, id: Identity, host: string, port: Port): Future[RemoteParty] {.async.} =
   result = newRemoteParty(id)
