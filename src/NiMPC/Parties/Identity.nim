@@ -34,5 +34,5 @@ proc `<`*(a, b: Identity): bool =
 proc `<=`*(a, b: Identity): bool =
   $a <= $b
 
-proc `hash`*(identity: Identity): Hash =
+proc `hash`*(identity: Identity): hashes.Hash =
   hash($identity)
