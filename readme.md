@@ -31,7 +31,7 @@ Ensure that you have a [recent version of Nim installed][nim-install].
 Use the [Nimble][nimble] package manager to add NiMPC to an existing project.
 Add the following to its .nimble file:
 
-    requires "NiMPC >= 0.3.0 & < 0.4.0"
+    requires "NiMPC >= 0.4.0 & < 0.5.0"
 
 Examples
 --------
