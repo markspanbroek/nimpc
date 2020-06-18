@@ -5,7 +5,7 @@ import NiMPC/Parties
 template run(statements) =
   var computations {.inject.} : seq[proc: Future[void]]
   statements
-  waitFor all(computations.mapIt(it()))
+  waitFor all(mapIt(computations, it()))
 
 template computation*(statements) =
   let asyncproc = proc {.async.} = statements

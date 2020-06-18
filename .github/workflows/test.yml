@@ -9,8 +9,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@master
-    - uses: jiro4989/setup-nim-action@v1.0.1
+    - uses: jiro4989/setup-nim-action@v1.1.2
       with:
-        nim-version: '1.0.4'
+        nim-version: '1.2.2'
     - run: nimble install -y
     - run: nimble test
