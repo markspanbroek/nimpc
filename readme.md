@@ -26,6 +26,8 @@ implemented before it can be considered feature complete:
 Installation
 ------------
 
+Only Linux and macOS are currently supported.
+
 Ensure that you have a [recent version of Nim installed][nim-install].
 
 Use the [Nimble][nimble] package manager to add NiMPC to an existing project.
